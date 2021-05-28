@@ -15,7 +15,9 @@ export default class Secret extends Component {
     }
     componentDidMount() {
         //GET message from server using fetch api
-        this.setState({message: "Hello Secret"})
+        fetch('/api/secret')
+            .then(res => res.text())
+            .then(res => this.setState({message: res}));
     }
     render() {
         return (

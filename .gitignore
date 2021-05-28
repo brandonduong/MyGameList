@@ -6,6 +6,7 @@ server/node_modules
 /.pnp
 .pnp.js
 .idea
+server/SECRET.js
 
 # testing
 /coverage

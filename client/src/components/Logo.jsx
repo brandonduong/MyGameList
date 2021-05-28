@@ -5,7 +5,8 @@ import logo from '../logo.svg'
 
 const Wrapper = styled.a.attrs({
     className: 'navbar-brand',
-})`padding-left: 25px`
+})`margin-left: -5px;
+margin-right: 0`
 
 class Logo extends Component {
     render() {
