@@ -5,14 +5,13 @@ import {useAuth} from "../context/auth/AuthContext";
 
 function Login(props) {
     const [user, setUser] = useState({
-        username: '',
         email: '',
         password: ''
     })
 
     const {dispatch} = useAuth()
 
-    const { username, email, password } = user;
+    const { email, password } = user;
 
     const onChange = e => setUser(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -46,15 +45,6 @@ function Login(props) {
         <Container fluid={"sm"}>
         <form onSubmit={onSubmit}>
             <h1>Login Below!</h1>
-            <h3>Username:</h3>
-            <input
-                type="username"
-                name="username"
-                placeholder="Enter username"
-                value={username}
-                onChange={onChange}
-                required
-            />
             <h3>Email address:</h3>
             <input
                 type="email"

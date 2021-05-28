@@ -10,13 +10,14 @@ const Collapse = styled.div.attrs({
 
 const List = styled.div.attrs({
     className: 'navbar-nav mr-auto',
-})`padding-bottom: 5px`
+})``
 
 const Item = styled.div.attrs({
     className: 'collpase navbar-collapse',
 })``
 
 function Links() {
+    // Get context
     const {
         state: {isAuthenticated},
     } = useAuth()
@@ -32,14 +33,31 @@ function Links() {
                                     Home
                                 </Link>
                             </Item>
-                            { isAuthenticated &&
+                        </List>
+                        { isAuthenticated ?
+                            <List>
                                 <Item>
                                     <Link to="/secret" className="nav-link">
                                         Secret
                                     </Link>
                                 </Item>
-                            }
-                        </List>
+                            </List>
+
+                            :
+
+                            <List>
+                                <Item>
+                                    <Link to="/login" className="nav-link">
+                                        Login
+                                    </Link>
+                                </Item>
+                                <Item>
+                                    <Link to="/signup" className="nav-link">
+                                        Sign Up
+                                    </Link>
+                                </Item>
+                            </List>
+                        }
                     </Collapse>
                 </React.Fragment>
     )
