@@ -5,13 +5,13 @@ import {useAuth} from "../context/auth/AuthContext";
 
 function Login(props) {
     const [user, setUser] = useState({
-        email: '',
+        username: '',
         password: ''
     })
 
     const {dispatch} = useAuth()
 
-    const { email, password } = user;
+    const { username, password } = user;
 
     const onChange = e => setUser(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -28,7 +28,10 @@ function Login(props) {
         })
             .then(res => {
                 if (res.status === 200) {
-                    dispatch({type: 'login'})
+                    dispatch({
+                        type: 'login',
+                        payload: user.username
+                    })
                     history.push('/');
                 } else {
                     const error = new Error(res.error);
@@ -45,12 +48,12 @@ function Login(props) {
         <Container fluid={"sm"}>
         <form onSubmit={onSubmit}>
             <h1>Login Below!</h1>
-            <h3>Email address:</h3>
+            <h3>Username:</h3>
             <input
-                type="email"
-                name="email"
-                placeholder="Enter email"
-                value={email}
+                type="username"
+                name="username"
+                placeholder="Enter username"
+                value={username}
                 onChange={onChange}
                 required
             />

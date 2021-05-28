@@ -16,8 +16,8 @@ createUser = (req, res) => {
 }
 
 authenticateUser = (req, res) => {
-    const { email, password } = req.body;
-    User.findOne({ email }, function(err, user) {
+    const { username, password } = req.body;
+    User.findOne({ username }, function(err, user) {
         if (err) {
             console.error(err);
             res.status(500)
@@ -27,7 +27,7 @@ authenticateUser = (req, res) => {
         } else if (!user) {
             res.status(401)
                 .json({
-                    error: 'Incorrect email or password'
+                    error: 'Incorrect username or password'
                 });
         } else {
             user.isCorrectPassword(password, function(err, same) {
@@ -39,11 +39,11 @@ authenticateUser = (req, res) => {
                 } else if (!same) {
                     res.status(401)
                         .json({
-                            error: 'Incorrect email or password'
+                            error: 'Incorrect username or password'
                         });
                 } else {
                     // Issue token
-                    const payload = { email };
+                    const payload = { username };
                     const token = jwt.sign(payload, secret, {
                         expiresIn: '1h'
                     });
@@ -53,6 +53,21 @@ authenticateUser = (req, res) => {
             });
         }
     });
+}
+
+profileInfo = (req, res) => {
+    const { user } = req.user
+    User.findOne({ user }, function (err, user) {
+        if (err) {
+            console.error(err);
+            res.status(500)
+                .json({
+                    error: 'Internal error please try again'
+                })
+        } else if (!user) {
+
+        }
+    })
 }
 
 // Check if user has good token
@@ -65,7 +80,7 @@ const withAuth = function(req, res, next) {
             if (err) {
                 res.status(401).send('Unauthorized: Invalid token');
             } else {
-                req.email = decoded.email;
+                req.username = decoded.username;
                 next();
             }
         });

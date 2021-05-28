@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import {useAuth} from '../context/auth/AuthContext'
+import Logout from "./Logout";
 
 const Collapse = styled.div.attrs({
     className: 'collpase navbar-collapse',
@@ -37,9 +38,12 @@ function Links() {
                         { isAuthenticated ?
                             <List>
                                 <Item>
-                                    <Link to="/secret" className="nav-link">
-                                        Secret
+                                    <Link to="/profile" className="nav-link">
+                                        Profile
                                     </Link>
+                                </Item>
+                                <Item>
+                                    <Logout />
                                 </Item>
                             </List>
 

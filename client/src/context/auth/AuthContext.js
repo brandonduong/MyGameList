@@ -7,13 +7,8 @@ function authReducer(state, action) {
         case 'login': {
             return {
                 ...state,
-                isAuthenticated: true
-            }
-        }
-        case 'logout': {
-            return {
-                ...state,
-                isAuthenticated: false
+                isAuthenticated: true,
+                user: action.payload
             }
         }
         default: {
@@ -32,6 +27,7 @@ function AuthProvider({children}) {
     const [state, dispatch] = useReducer(authReducer, localState || initialState, undefined);
     useEffect(() => {
         localStorage.setItem("state", JSON.stringify(state));
+        console.log(JSON.stringify(state))
     }, [state]);
 
     const value = {state, dispatch}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Home, Secret, Login, SignUp } from '../pages/index';
+import { Home, Profile, Login, SignUp } from '../pages/index';
 import { NavBar, WithAuth } from "../components/index";
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -14,7 +14,7 @@ export default class App extends Component {
                   <NavBar />
                   <Switch>
                     <Route path="/" exact component={Home} />
-                    <Route path="/secret" exact component={WithAuth(Secret)} />
+                    <Route path="/profile" exact component={Profile} />
                     <Route path="/login" exact component={Login}/>
                     <Route path="/signup" exact component={SignUp}/>
                   </Switch>
