@@ -36,12 +36,15 @@ function Links() {
                             </Item>
                         </List>
                         { isAuthenticated ?
+                            // Links if user is logged in
                             <List>
+                                {/*}
                                 <Item>
                                     <Link to="/profile" className="nav-link">
                                         Profile
                                     </Link>
                                 </Item>
+                                */}
                                 <Item>
                                     <Logout />
                                 </Item>
@@ -49,6 +52,7 @@ function Links() {
 
                             :
 
+                            // Links if user is not logged in
                             <List>
                                 <Item>
                                     <Link to="/login" className="nav-link">

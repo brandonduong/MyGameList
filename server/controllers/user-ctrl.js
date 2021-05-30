@@ -8,7 +8,7 @@ createUser = (req, res) => {
     user.save(function(err) {
         if (err) {
             res.status(500)
-                .send("Error registering new user please try again.");
+                .send("Error registering new user please try again.")
         } else {
             res.status(200).send("Welcome to the club!");
         }
@@ -56,16 +56,24 @@ authenticateUser = (req, res) => {
 }
 
 profileInfo = (req, res) => {
-    const { user } = req.user
-    User.findOne({ user }, function (err, user) {
+    const { user } = req.body
+    User.findOne({ username: user }, function (err, userObj) {
         if (err) {
             console.error(err);
             res.status(500)
                 .json({
                     error: 'Internal error please try again'
                 })
-        } else if (!user) {
-
+        } else if (!userObj) {
+            res.status(401)
+                .json({
+                    error: `No user with username = ${user}`
+                });
+        } else {
+            res.status(200)
+                .json({
+                    join_date: userObj.createdAt
+                })
         }
     })
 }
@@ -96,4 +104,5 @@ module.exports = {
     authenticateUser,
     withAuth,
     checkToken,
+    profileInfo
 }
