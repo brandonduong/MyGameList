@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import {useAuth} from '../context/auth/AuthContext'
-import Logout from "./Logout";
 
 const Collapse = styled.div.attrs({
     className: 'collpase navbar-collapse',

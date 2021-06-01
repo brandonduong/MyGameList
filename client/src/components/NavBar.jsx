@@ -4,8 +4,11 @@ import Logo from './Logo'
 import Links from './Links'
 import {Container, DropdownButton, Navbar, Dropdown} from "react-bootstrap";
 import {useAuth} from "../context/auth/AuthContext";
-import Logout from "./Logout";
-import {Link} from "react-router-dom";
+
+function logout() {
+    localStorage.clear();
+    window.location.href = '/';
+}
 
 function NavBar() {
     // Get context
@@ -23,10 +26,11 @@ function NavBar() {
             <Links />
             <Navbar.Brand>
                 {
-                    user && <DropdownButton variant="secondary" title={user + " "}>
-                        <Dropdown.Item><Link to={"/profile/" + user} className={"nav-link"}>Profile</Link></Dropdown.Item>
-                        <Dropdown.Item><Link to={"/"} className={"nav-link"}>Account Settings</Link></Dropdown.Item>
-                        <Dropdown.Item><Logout /></Dropdown.Item>
+                    user &&
+                    <DropdownButton variant="secondary" title={user + " "}>
+                        <Dropdown.Item href={"/profile/" + user} className={"nav-link"}>Profile</Dropdown.Item>
+                        <Dropdown.Item href={"/"} className={"nav-link"}>Account Settings</Dropdown.Item>
+                        <Dropdown.Item href={"/"} className={"nav-link"} onClick={logout}>Logout</Dropdown.Item>
                     </DropdownButton>
                 }
             </Navbar.Brand>

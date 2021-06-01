@@ -37,7 +37,7 @@ function Profile(props) {
                 console.error(err);
                 // Bring up 404 page not found
             })
-    })
+    }, [user])
 
     return (
         <Container fluid={"sm"}>
