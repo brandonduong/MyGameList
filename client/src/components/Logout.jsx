@@ -8,8 +8,8 @@ function logout() {
 
 function Logout() {
     return (
-        <Link to="/" className={"nav-link"}>
-            <span onClick={logout}>Logout</span>
+        <Link to="/" className={"nav-link"} onClick={logout}>
+            Logout
         </Link>
     )
 }

@@ -2,8 +2,10 @@ import React from 'react'
 
 import Logo from './Logo'
 import Links from './Links'
-import {Container, Navbar} from "react-bootstrap";
+import {Container, DropdownButton, Navbar, Dropdown} from "react-bootstrap";
 import {useAuth} from "../context/auth/AuthContext";
+import Logout from "./Logout";
+import {Link} from "react-router-dom";
 
 function NavBar() {
     // Get context
@@ -16,10 +18,18 @@ function NavBar() {
             <Container fluid={"sm"}>
                 <Logo />
             <Navbar.Brand href="/">
-                MyVideoGameList
+                MyGameList
             </Navbar.Brand>
             <Links />
-            <Navbar.Brand href={"/profile/" + user}> {user} </Navbar.Brand>
+            <Navbar.Brand>
+                {
+                    user && <DropdownButton variant="secondary" title={user + " "}>
+                        <Dropdown.Item><Link to={"/profile/" + user} className={"nav-link"}>Profile</Link></Dropdown.Item>
+                        <Dropdown.Item><Link to={"/"} className={"nav-link"}>Account Settings</Link></Dropdown.Item>
+                        <Dropdown.Item><Logout /></Dropdown.Item>
+                    </DropdownButton>
+                }
+            </Navbar.Brand>
             </Container>
         </Navbar>
     )

@@ -46,7 +46,7 @@ function Links() {
                                 </Item>
                                 */}
                                 <Item>
-                                    <Logout />
+
                                 </Item>
                             </List>
 
