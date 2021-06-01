@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Container} from "react-bootstrap";
+import {Button, Card, Container, Form} from "react-bootstrap";
 import {useHistory} from "react-router";
 
 function SignUp(props) {
@@ -11,11 +11,13 @@ function SignUp(props) {
 
     const { username, email, password } = user;
 
+    const [showPassword, setShowPassword] = useState(false)
+
     const onChange = e => setUser(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
     const history = useHistory()
 
-    function onSubmit(event) {
+    function onSignup(event) {
         event.preventDefault();
         fetch('/api/register', {
             method: 'POST',
@@ -38,12 +40,11 @@ function SignUp(props) {
             });
     }
 
-    return (
-        <Container fluid={"sm"}>
-            <form onSubmit={onSubmit}>
-                <h1>Signup Below!</h1>
-                <h3>Username:</h3>
-                <input
+    const signupForm =
+        <Form onSubmit={onSignup}>
+            <Form.Group>
+                <Form.Label>Username:</Form.Label>
+                <Form.Control
                     type="username"
                     name="username"
                     placeholder="Enter username"
@@ -51,8 +52,8 @@ function SignUp(props) {
                     onChange={onChange}
                     required
                 />
-                <h3>Email address:</h3>
-                <input
+                <Form.Label>Email address:</Form.Label>
+                <Form.Control
                     type="email"
                     name="email"
                     placeholder="Enter email"
@@ -60,18 +61,35 @@ function SignUp(props) {
                     onChange={onChange}
                     required
                 />
-                <h3>Password:</h3>
-                <input
-                    type="password"
+                <Form.Label>Password:</Form.Label>
+                <Form.Control
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="Enter password"
                     value={password}
                     onChange={onChange}
-                    required
-                />
+                    required/>
+                {/*
+                <i onClick={togglePasswordVisibility} style={{position: "relative",
+                    display: "flex",
+                    marginTop: 6}}>{eye}</i>
+                */}
                 <br></br>
-                <input type="submit" value="Submit"/>
-            </form>
+            </Form.Group>
+            <Button type ="submit" variant="primary">Signup</Button>
+        </Form>
+
+    return (
+        <Container style={{paddingTop: 25}}>
+            <Card style={{width: '50%', left: '25%', padding: 0}}>
+                <Card.Header>
+                    <h2>Create new account</h2>
+                </Card.Header>
+
+                <Card.Body>
+                    {signupForm}
+                </Card.Body>
+            </Card>
         </Container>
     );
 }
