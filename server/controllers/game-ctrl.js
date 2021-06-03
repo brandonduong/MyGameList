@@ -1,11 +1,12 @@
 const request = require('request')
+const {client_id, client_secret} = require('../SECRET.js')
 
 const options = {
     url: 'https://id.twitch.tv/oauth2/token',
     json:true,
     body: {
-        client_id: 'dhvor97iu53xl0gaqmd1bbg349a3i4',
-        client_secret: 'fd1yrxez5nzr72345valp9js0di7f3',
+        client_id: client_id,
+        client_secret: client_secret,
         grant_type: 'client_credentials'
     }
 };
@@ -63,7 +64,7 @@ function gameRequest(accessToken, gameId, callback){
         method: 'POST',
         body: `fields *; where id = ${gameId};`,
         headers: {
-            'Client-ID': 'dhvor97iu53xl0gaqmd1bbg349a3i4',
+            'Client-ID': client_id,
             'Authorization': 'Bearer ' + accessToken
         }
     }
