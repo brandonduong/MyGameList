@@ -4,14 +4,14 @@ import React, {useEffect, useState} from "react";
 
 function SearchResults(props) {
     const t = window.location.href.split('q=')
-    let query = t[t.length - 1]
-    query = query.replaceAll('%20', ' ')
+    let query = t[t.length - 1].replaceAll('%20', ' ')
 
     const [response, setResponse] = useState([])
 
     useEffect(() =>
     {
         console.log("fetching")
+        setResponse([])
         fetch('/api/search', {
             method: 'POST',
             body: JSON.stringify({query: query}),
@@ -35,7 +35,7 @@ function SearchResults(props) {
                 console.error(err);
                 // Bring up 404 page not found
             })
-    }, [])
+    }, [query])
 
     return <Container style={{paddingTop: 25}}>
         <Card style={{width: '50%', left: '25%', padding: 0}}>

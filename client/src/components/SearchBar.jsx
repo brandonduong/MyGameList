@@ -9,7 +9,8 @@ function SearchBar() {
 
     const history = useHistory()
 
-    function onSearch() {
+    function onSearch(event) {
+        event.preventDefault()
         history.push('/search?q=' + query);
     }
 
@@ -23,7 +24,7 @@ function SearchBar() {
                     />
                 </Col>
                 <Col xs={"auto"} style={{paddingRight: 15}}>
-                    <Button type="submit" variant="dark" href={"/search?q=" + query}><Search /></Button>
+                    <Button type="submit" variant="dark" onClick={onSearch}><Search /></Button>
                 </Col>
             </Form.Row>
         </Form>
