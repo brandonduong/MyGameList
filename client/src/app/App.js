@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Home, Profile, Login, SignUp, GameInfo } from '../pages/index';
+import { Home, Profile, Login, SignUp, GameInfo, SearchResults } from '../pages/index';
 import { NavBar, WithAuth } from "../components/index";
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -18,6 +18,7 @@ export default class App extends Component {
                     <Route path="/login" exact component={Login}/>
                     <Route path="/signup" exact component={SignUp}/>
                     <Route path="/game/:gameId" exact component={GameInfo}/>
+                    <Route path="/search" exact component={SearchResults}/>
                   </Switch>
                 </Router>
             </AuthProvider>

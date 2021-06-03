@@ -2,8 +2,9 @@ import React from 'react'
 
 import Logo from './Logo'
 import Links from './Links'
-import {Container, DropdownButton, Navbar, Dropdown} from "react-bootstrap";
+import {Container, DropdownButton, Navbar, Dropdown, NavDropdown, Nav} from "react-bootstrap";
 import {useAuth} from "../context/auth/AuthContext";
+import {SearchBar} from "./index";
 
 function logout() {
     localStorage.clear();
@@ -17,23 +18,24 @@ function NavBar() {
     } = useAuth()
 
     return (
-        <Navbar bg="dark" variant="dark">
+        <Navbar bg="dark"  variant="dark">
             <Container fluid={"sm"}>
                 <Logo />
-            <Navbar.Brand href="/">
-                MyGameList
-            </Navbar.Brand>
-            <Links />
-            <Navbar.Brand>
+                <Navbar.Brand href="/">
+                    MyGameList
+                </Navbar.Brand>
+                <Links />
+                <SearchBar/>
+                <Nav className="mr-auto">
                 {
                     user &&
-                    <DropdownButton variant="secondary" title={user + " "}>
-                        <Dropdown.Item href={"/profile/" + user} className={"nav-link"}>Profile</Dropdown.Item>
-                        <Dropdown.Item href={"/"} className={"nav-link"}>Account Settings</Dropdown.Item>
-                        <Dropdown.Item href={"/"} className={"nav-link"} onClick={logout}>Logout</Dropdown.Item>
-                    </DropdownButton>
+                    <NavDropdown id="basic-nav-dropdown" variant="dark" title={user + " "}>
+                        <NavDropdown.Item href={"/profile/" + user}>Profile</NavDropdown.Item>
+                        <NavDropdown.Item href={"/"}>Account Settings</NavDropdown.Item>
+                        <NavDropdown.Item href={"/"} onClick={logout}>Logout</NavDropdown.Item>
+                    </NavDropdown>
                 }
-            </Navbar.Brand>
+                </Nav>
             </Container>
         </Navbar>
     )
