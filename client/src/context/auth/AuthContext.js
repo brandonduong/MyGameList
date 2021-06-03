@@ -11,6 +11,13 @@ function authReducer(state, action) {
                 user: action.payload
             }
         }
+        case 'logout': {
+            return {
+                ...state,
+                isAuthenticated: false,
+                user: null
+            }
+        }
         default: {
             throw new Error(`Unhandled action type: ${action.type}`)
         }
