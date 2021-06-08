@@ -86,7 +86,68 @@ function gameRequest(accessToken, gameId, callback){
     }
 }
 
+function gameSearch(accessToken, query, callback) {
+    const searchOptions = {
+        url: 'https://api.igdb.com/v4/games',
+        method: 'POST',
+        body: `search "${query}"; fields name, slug, first_release_date, total_rating_count, *; where category = 0; limit 500;`,
+        headers: {
+            'Client-ID': client_id,
+            'Authorization': 'Bearer ' + accessToken
+        }
+    }
+
+    if (!accessToken) {
+        console.log("No Token");
+    } else {
+        console.log(searchOptions);
+
+        request.post(searchOptions, (err, res, body) => {
+            if (err) {
+                return console.log(err);
+            }
+
+            console.log(`Status: ${res.statusCode}`);
+            console.log(JSON.parse(body));
+            callback(err, body)
+        });
+    }
+}
+
+searchInfo = (req, res) => {
+    const { query } = req.body
+    let AT = ""
+    let info = ""
+    getAT(function (err, result) {
+        console.log("AT:" + result)
+        AT = result
+    })
+
+    setTimeout(() => {
+        let promise = new Promise(function (resolve, reject) {
+            gameSearch(AT, query, function (err, result) {
+                info = result
+                resolve()
+            });
+        });
+
+        promise.then(
+            function result() {
+                if (!info) {
+                    res.status(401)
+                        .json({
+                            error: `No info returned`
+                        });
+                } else {
+                    res.status(200)
+                        .json(JSON.parse(info))
+                }
+            }
+        )}, 1000)
+}
+
 
 module.exports = {
-    gameInfo
+    gameInfo,
+    searchInfo
 }

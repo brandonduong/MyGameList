@@ -76,7 +76,7 @@ function SignUp(props) {
                 */}
                 <br></br>
             </Form.Group>
-            <Button type ="submit" variant="primary">Signup</Button>
+            <Button type ="submit" variant="dark">Signup</Button>
         </Form>
 
     return (
