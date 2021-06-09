@@ -1,6 +1,7 @@
-import {Card, Container} from "react-bootstrap";
+import {Card, Container, ListGroupItem} from "react-bootstrap";
 import React, {useEffect, useState} from "react";
 import {DataGrid} from "@material-ui/data-grid";
+import {Link} from "react-router-dom";
 
 function SearchResults(props) {
 
@@ -35,7 +36,11 @@ function SearchResults(props) {
                 // Convert unix time to date
                 data.forEach(function (item, index) {
                     // Make date readable
-                    item.first_release_date = ((new Date(item.first_release_date * 1000)).toDateString()).split('').splice(4).join('')
+                    item.first_release_date = ((new Date(item.first_release_date * 1000)).toDateString())
+                        .split('').splice(4).join('')
+
+                    // Add link to name property to help display in DataGrid
+                    item.name = { name: item.name, id: item.id}
 
                     if (item.first_release_date === "Invalid Date") {
                         item.first_release_date = "No record"
@@ -53,7 +58,15 @@ function SearchResults(props) {
     }, [query])
 
     const columns = [
-        { field: 'name', headerName: 'Title', width: 800, flex: 1 },
+        { field: 'name', headerName: 'Title', width: 625, flex: 1,
+            renderCell: (params) => (
+                <div style={{marginLeft: -15, width: '100%'}}>
+                    <ListGroupItem action href={'game/' + params.value.id} style={{height:50, paddingTop:0, paddingBottom:0, width: '100%',
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                        {params.value.name}
+                    </ListGroupItem>
+                </div>
+            )},
         { field: 'first_release_date', headerName: 'Release Date', width: 450, flex: 1 },
     ]
 
@@ -67,7 +80,8 @@ function SearchResults(props) {
                 {
                     searchFound ?
                         <div style={{ height: 765, width: '100%' }}>
-                            <DataGrid rows={response} columns={columns} columnBuffer={50} rowHeight={50} pageSize={pageSize} disableSelectionOnClick />
+                            <DataGrid rows={response} columns={columns} columnBuffer={50} rowHeight={50}
+                                      pageSize={pageSize} disableSelectionOnClick />
                         </div>
 
                         :
