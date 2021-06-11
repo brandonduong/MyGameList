@@ -40,9 +40,10 @@ function SearchResults(props) {
                         .split('').splice(4).join('')
 
                     // Add link to name property to help display in DataGrid
+                    // item.title = item.name
                     item.name = { name: item.name, id: item.id}
 
-                    if (item.first_release_date === "Invalid Date") {
+                    if (item.first_release_date === "lid Date") {
                         item.first_release_date = "No record"
                     }
                 })
@@ -58,6 +59,7 @@ function SearchResults(props) {
     }, [query])
 
     const columns = [
+        // {field: 'title', headerName: 'test', flex: 1},
         { field: 'name', headerName: 'Title', width: 625, flex: 1,
             renderCell: (params) => (
                 <div style={{marginLeft: -15, width: '100%'}}>
@@ -66,9 +68,11 @@ function SearchResults(props) {
                         {params.value.name}
                     </ListGroupItem>
                 </div>
-            )},
+            ),
+        },
         { field: 'first_release_date', headerName: 'Release Date', width: 450, flex: 1 },
     ]
+
 
     return <Container style={{paddingTop: 25}}>
         <Card style={{width: '100%', padding: 0}}>

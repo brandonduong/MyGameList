@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Container} from "react-bootstrap";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {useParams} from "react-router";
+import {Box, Card, Typography} from "@material-ui/core";
+import {Rating} from "@material-ui/lab";
 
 function GameInfo(props) {
     const { gameId } = useParams()
@@ -11,6 +13,11 @@ function GameInfo(props) {
         reviews: []
     })
     const [gameFound, setGameFound] = useState(false)
+    const [starForAdding, setStarForAdding] = useState(0)
+    const [hoursForAdding, setHoursForAdding] = useState(null)
+
+
+    const onChange = e => setHoursForAdding(e.target.value)
 
     useEffect(() => {
         console.log(gameId)
@@ -39,11 +46,53 @@ function GameInfo(props) {
             });
     }, [gameId])
 
+    const addToListForm =
+        <Form>
+            <Form.Row className={"d-flex"}>
+                <Col xs="auto">
+                    <Card>
+                        <Row>
+                            <Col>
+                                <Form.Label style={{paddingTop: 5}}>Star Rating:</Form.Label>
+                            </Col>
+                            <Col>
+                                <Rating
+                                    style={{marginTop: 5}}
+                                    name="starsForAdding"
+                                    defaultValue={0}
+                                    max={10}
+                                    onChange={(event, newValue) => {
+                                        setStarForAdding(newValue)
+                                    }}
+                                />
+                            </Col>
+                        </Row>
+                    </Card>
+                </Col>
+
+                <Col xs="2">
+                    <Form.Control
+                        type="number"
+                        name="hours"
+                        placeholder="Enter hours"
+                        value={hoursForAdding}
+                        onChange={onChange}
+                        required/>
+                </Col>
+                <Col xs="auto">
+                    <Button type="submit" variant={"dark"}>
+                        Add to list
+                    </Button>
+                </Col>
+            </Form.Row>
+        </Form>
+
     return (
         <Container style={{paddingTop: 25}}>
             {gameFound ?
                 <span>
                     <h1>Game Info Page for: {info.title}</h1>
+                    {addToListForm}
                 </span>
 
                 :
