@@ -107,6 +107,15 @@ function GameInfo(props) {
                         onChange={onChange}
                         required/>
                 </Col>
+
+                <Col xs="auto">
+                    {/*<Form.Label>State</Form.Label>*/}
+                    <Form.Control as="select" defaultValue="Choose...">
+                        <option>Choose list...</option>
+                        <option>...</option>
+                    </Form.Control>
+                </Col>
+
                 <Col xs="auto">
                     <Button type="submit" variant={"dark"}>
                         Add to list

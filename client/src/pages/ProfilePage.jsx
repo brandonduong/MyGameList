@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Container, ListGroupItem} from "react-bootstrap";
 import {useParams} from "react-router";
-import {Card} from "@material-ui/core";
+import {Card, Link} from "@material-ui/core";
 import {DataGrid} from "@material-ui/data-grid";
 
 function Profile(props) {
@@ -71,7 +71,14 @@ function Profile(props) {
 
     const columns = [
         // {field: 'gameId', headerName: 'test', flex: 1},
-        { field: 'title', headerName: 'Title', width: 625, flex: 1},
+        { field: 'title', headerName: 'Title', width: 625, flex: 1,
+            renderCell: (params) => (
+                <strong>
+                    <Link to={"/game/" + params.value}>
+                        {params.value}
+                    </Link>
+                </strong>
+            )},
         { field: 'rating', headerName: 'Rating', width: 450, flex: 0.25 },
         { field: 'hours', headerName: 'Hours', width: 450, flex: 0.25 },
         { field: 'thoughts', headerName: 'Thoughts', width: 450, flex: 1 }

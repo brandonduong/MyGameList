@@ -62,12 +62,11 @@ function SearchResults(props) {
         // {field: 'title', headerName: 'test', flex: 1},
         { field: 'name', headerName: 'Title', width: 625, flex: 1,
             renderCell: (params) => (
-                <div style={{marginLeft: -15, width: '100%'}}>
-                    <ListGroupItem action href={'game/' + params.value.id} style={{height:50, paddingTop:0, paddingBottom:0, width: '100%',
-                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                <strong style={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                    <Link to={"/game/" + params.value.id}>
                         {params.value.name}
-                    </ListGroupItem>
-                </div>
+                    </Link>
+                </strong>
             ),
         },
         { field: 'first_release_date', headerName: 'Release Date', width: 450, flex: 1 },
