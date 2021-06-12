@@ -55,7 +55,7 @@ function GameInfo(props) {
         event.preventDefault();
         fetch('/api/addToList', {
             method: 'POST',
-            body: JSON.stringify({rating: starForAdding, gameId: gameId, username: user, hours: hoursForAdding}),
+            body: JSON.stringify({rating: starForAdding, gameId: gameId, title: info.title, username: user, hours: hoursForAdding}),
             headers: {
                 'Content-Type': 'application/json'
             }

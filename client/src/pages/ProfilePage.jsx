@@ -70,11 +70,11 @@ function Profile(props) {
     }, [user])
 
     const columns = [
-        // {field: 'title', headerName: 'test', flex: 1},
-        { field: 'gameId', headerName: 'Title', width: 625, flex: 1},
-        { field: 'rating', headerName: 'Rating', width: 450, flex: 1 },
-        { field: 'thoughts', headerName: 'Thoughts', width: 450, flex: 1 },
-        { field: 'hours', headerName: 'Hours', width: 450, flex: 1 },
+        // {field: 'gameId', headerName: 'test', flex: 1},
+        { field: 'title', headerName: 'Title', width: 625, flex: 1},
+        { field: 'rating', headerName: 'Rating', width: 450, flex: 0.25 },
+        { field: 'hours', headerName: 'Hours', width: 450, flex: 0.25 },
+        { field: 'thoughts', headerName: 'Thoughts', width: 450, flex: 1 }
     ]
 
     return (
