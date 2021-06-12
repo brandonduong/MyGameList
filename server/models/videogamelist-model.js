@@ -1,10 +1,10 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const Review = require('review-model')
+
 
 const VideoGameList = new Schema ({
-        owner: { type: String, required: true },
-        reviews : { type: [Review], required: true}
+        username: { type: String, required: true },
+        reviews : { type: [Schema.Types.ObjectId], required: true}
     },
     { timestamps: false},
 )

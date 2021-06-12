@@ -2,6 +2,7 @@ const express = require('express')
 
 const UserCtrl = require('../controllers/user-ctrl')
 const GameCtrl =  require('../controllers/game-ctrl')
+const VideoGameListCtrl = require('../controllers/videogamelist-ctrl')
 
 const router = express.Router()
 
@@ -11,6 +12,9 @@ router.get('/checkToken', UserCtrl.withAuth, UserCtrl.checkToken)
 router.post('/profile', UserCtrl.profileInfo)
 router.post('/game', GameCtrl.gameInfo)
 router.post('/search', GameCtrl.searchInfo)
+
+router.post('/addToList', UserCtrl.withAuth, VideoGameListCtrl.addReview)
+router.get('/getList/:user', VideoGameListCtrl.getList)
 
 router.get('/home', function(req, res) {
     res.send('Welcome home!')

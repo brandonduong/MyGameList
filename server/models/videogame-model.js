@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const Review = require('review-model')
+const Review = require('./review-model')
 
 const VideoGame = new Schema ({
     title: { type: String, required: true },

@@ -1,4 +1,5 @@
 const User = require('../models/user-model')
+const VideoGameList = require('../models/videogamelist-model')
 const jwt = require("jsonwebtoken");
 const {secret} = require("../SECRET");
 
@@ -10,6 +11,9 @@ createUser = (req, res) => {
             res.status(500)
                 .send("Error registering new user please try again.")
         } else {
+            /*const vgList = new VideoGameList({username: username, reviews: []})
+            vgList.save(function (err) {
+            })*/
             res.status(200).send("Welcome to the club!");
         }
     })
