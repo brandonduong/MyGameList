@@ -16,6 +16,8 @@ function GameInfo(props) {
     const [gameFound, setGameFound] = useState(false)
     const [starForAdding, setStarForAdding] = useState(0)
     const [hoursForAdding, setHoursForAdding] = useState("")
+    const [listToAddTo, setListToAddTo] = useState("Default")
+    const [userLists, setUserLists] = useState([])
     const [alreadyReviewed, setAlreadyReviewed] = useState(false)
 
     const {
@@ -49,13 +51,15 @@ function GameInfo(props) {
             .catch(err => {
                 console.error(err);
             });
+
+
     }, [gameId])
 
     function onAddToList(event) {
         event.preventDefault();
         fetch('/api/addToList', {
             method: 'POST',
-            body: JSON.stringify({rating: starForAdding, gameId: gameId, title: info.title, username: user, hours: hoursForAdding}),
+            body: JSON.stringify({list: listToAddTo, rating: starForAdding, gameId: gameId, title: info.title, username: user, hours: hoursForAdding}),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -109,8 +113,7 @@ function GameInfo(props) {
                 </Col>
 
                 <Col xs="auto">
-                    {/*<Form.Label>State</Form.Label>*/}
-                    <Form.Control as="select" defaultValue="Choose...">
+                    <Form.Control as="select" defaultValue="Choose..." required>
                         <option>Choose list...</option>
                         <option>...</option>
                     </Form.Control>
