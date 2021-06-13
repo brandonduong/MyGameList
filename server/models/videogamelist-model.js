@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 
 const VideoGameList = new Schema ({
         username: { type: String, required: true },
-        reviews : { type: [Schema.Types.ObjectId], required: true}
+        name: { type: String, required: true}
     },
     { timestamps: false},
 )

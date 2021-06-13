@@ -11,9 +11,9 @@ createUser = (req, res) => {
             res.status(500)
                 .send("Error registering new user please try again.")
         } else {
-            /*const vgList = new VideoGameList({username: username, reviews: []})
+            const vgList = new VideoGameList({username: username, name: "Default"})
             vgList.save(function (err) {
-            })*/
+            })
             res.status(200).send("Welcome to the club!");
         }
     })

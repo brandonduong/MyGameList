@@ -35,7 +35,7 @@ addReview = (req, res) => {
 }
 
 getList = async (req, res) => {
-    await Review.find({username: req.params.user}, (err, reviews) => {
+    await Review.find({username: req.params.user, list: req.params.list}, (err, reviews) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -43,7 +43,51 @@ getList = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+getLists = async (req, res) => {
+    await VideoGameList.find({username: req.params.user}, (err, lists) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        return res.status(200).json({ success: true, data: lists })
+    }).catch(err => console.log(err))
+}
+
+addList = (req, res) => {
+    const body = req.body
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide list name.',
+        })
+    }
+
+    // username, rating, thoughts, game, hours
+    const list = new VideoGameList(body)
+
+    if (!list) {
+        return res.status(400).json({ success: false, error: err })
+    }
+
+    list
+        .save()
+        .then(() => {
+            return res.status(200).json({
+                success: true,
+                message: 'List created!',
+            })
+        })
+        .catch(error => {
+            return res.status(400).json({
+                error,
+                message: 'List not created!',
+            })
+        })
+}
+
 module.exports = {
     addReview,
-    getList
+    getList,
+    getLists,
+    addList
 }

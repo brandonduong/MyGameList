@@ -14,7 +14,9 @@ router.post('/game', GameCtrl.gameInfo)
 router.post('/search', GameCtrl.searchInfo)
 
 router.post('/addToList', UserCtrl.withAuth, VideoGameListCtrl.addReview)
-router.get('/getList/:user', VideoGameListCtrl.getList)
+router.get('/getList/:user.:list', VideoGameListCtrl.getList)
+router.get('/getLists/:user', VideoGameListCtrl.getLists)
+router.post('/addList', UserCtrl.withAuth, VideoGameListCtrl.addList)
 
 router.get('/home', function(req, res) {
     res.send('Welcome home!')
