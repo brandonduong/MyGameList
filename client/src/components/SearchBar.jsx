@@ -1,5 +1,4 @@
-import {Button, Col, Form, FormControl, Row} from "react-bootstrap";
-import {Link} from "react-router-dom";
+import {Button, Col, Form, FormControl} from "react-bootstrap";
 import { Search } from 'react-bootstrap-icons';
 import React, {useState} from "react";
 import {useHistory} from "react-router";

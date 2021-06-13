@@ -14,7 +14,7 @@ export default class App extends Component {
                   <NavBar />
                   <Switch>
                     <Route path="/" exact component={Home} />
-                    <Route path="/profile/:user" exact component={Profile} />
+                    <Route path="/profile/:profileUser" exact component={Profile} />
                     <Route path="/login" exact component={Login}/>
                     <Route path="/signup" exact component={SignUp}/>
                     <Route path="/game/:gameId" exact component={GameInfo}/>

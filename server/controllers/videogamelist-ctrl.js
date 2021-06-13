@@ -10,6 +10,13 @@ addReview = (req, res) => {
             error: 'You must provide game + listing information.',
         })
     }
+    // Check if user owns resource they are trying to manipulate
+    else if (body.username && req.username !== body.username) {
+        return res.status(400).json({
+            success: false,
+            error: 'Trying to create review for an account you do not own.',
+        })
+    }
 
     // username, rating, thoughts, game, hours
     const listing = new Review(body)
@@ -59,6 +66,13 @@ addList = (req, res) => {
         return res.status(400).json({
             success: false,
             error: 'You must provide list name.',
+        })
+    }
+    // Check if user owns resource they are trying to manipulate
+    else if (body.username && req.username !== body.username) {
+        return res.status(400).json({
+            success: false,
+            error: 'Trying to create list for an account you do not own.',
         })
     }
 

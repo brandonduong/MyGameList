@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Container, Form, ListGroupItem, Nav, Tab, Tabs} from "react-bootstrap";
+import {Container} from "react-bootstrap";
 import {useParams} from "react-router";
-import {Link} from "@material-ui/core";
-import {DataGrid} from "@material-ui/data-grid";
-import GameListTabs from "../components/GameListTabs";
+import {GameListTabs} from "../components/index"
 
 function Profile(props) {
-    const {user} = useParams()
+    const {profileUser} = useParams()
 
     const [join_date, setJoinDate] = useState("")
     const [profileFound, setProfileFound] = useState(false)
@@ -17,10 +15,10 @@ function Profile(props) {
 
     useEffect(() => {
         //GET message from server using fetch api
-        console.log(user)
+        console.log(profileUser)
         fetch('/api/profile', {
             method: 'POST',
-            body: JSON.stringify({user: user}),
+            body: JSON.stringify({user: profileUser}),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -44,7 +42,7 @@ function Profile(props) {
                 // Bring up 404 page not found
             })
 
-        fetch('/api/getLists/' + user, {
+        fetch('/api/getLists/' + profileUser, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -69,18 +67,18 @@ function Profile(props) {
                 // Bring up 404 page not found
             })
 
-    }, [user])
+    }, [profileUser])
 
     return (
         <Container fluid={"sm"}>
             {profileFound && listsFound ?
                 <span>
-                    User: {user}
+                    User: {profileUser}
                     <br/>
                     Joined: {join_date}
                     <br/>
 
-                    <GameListTabs user={user} lists={lists}/>
+                    <GameListTabs user={profileUser} lists={lists} listsFound={listsFound}/>
                 </span>
 
                 :

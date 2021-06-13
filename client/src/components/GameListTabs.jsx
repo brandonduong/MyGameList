@@ -2,9 +2,14 @@ import React, {useEffect, useState} from "react";
 import {Button, Form, Tab, Tabs} from "react-bootstrap";
 import {Link} from "@material-ui/core";
 import {DataGrid} from "@material-ui/data-grid";
+import {useAuth} from "../context/auth/AuthContext";
 
 function GameListTabs(props) {
-    const user = props.user
+    const profileUser = props.user
+
+    const {
+        state: {user},
+    } = useAuth()
 
     // Deals with displaying existing lists
     const [currentList, setCurrentList] = useState([])
@@ -40,7 +45,7 @@ function GameListTabs(props) {
     function addList() {
         fetch('/api/addList', {
             method: 'POST',
-            body: JSON.stringify({username: user, name: newListName}),
+            body: JSON.stringify({username: profileUser, name: newListName}),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -60,7 +65,7 @@ function GameListTabs(props) {
 
     function getReviews(list) {
         setCurrentListFound(false)
-        fetch('/api/getList/' + user + "." + list, {
+        fetch('/api/getList/' + profileUser + "." + list, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -91,7 +96,7 @@ function GameListTabs(props) {
         {
             field: 'title', headerName: 'Title', width: 625, flex: 1,
             renderCell: (params) => (
-                <strong>
+                <strong style={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
                     <Link to={"/game/" + params.value}>
                         {params.value}
                     </Link>
@@ -104,7 +109,7 @@ function GameListTabs(props) {
         ]
 
     return (
-        <Tabs id='uncontrolled-tab' defaultActiveKey={'Default'} transition={false}
+        <Tabs id='uncontrolled-tab' transition={false}
               onSelect={tabSelect}>
             {props.lists.map((list, id) => (
                 <Tab key={id} eventKey={list.name} title={list.name}>
@@ -122,9 +127,13 @@ function GameListTabs(props) {
                     }
                 </Tab>
             ))}
-            <Tab key='add-list' eventKey={'add-list'} title={'+'}>
-                {addListForm}
-            </Tab>
+            { user === profileUser ?
+                <Tab key='add-list' eventKey={'add-list'} title={'+'}>
+                    {addListForm}
+                </Tab>
+                :
+                <></>
+            }
 
         </Tabs>
     )
