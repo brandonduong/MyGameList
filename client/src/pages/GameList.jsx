@@ -58,7 +58,7 @@ function GameList(props) {
     ]
 
     return (
-        <Container fluid={"sm"}>
+        <Container fluid={"sm"} style={{paddingTop: 25}}>
             {
                 currentListFound ?
                     <div style={{height: 765, display: 'flex'}}>

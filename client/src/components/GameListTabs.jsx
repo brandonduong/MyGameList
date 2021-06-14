@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, Container, Form, Tab, Tabs} from "react-bootstrap";
+import {Button, Card, Col, Container, Form, Row, Tab, Tabs} from "react-bootstrap";
 import {Link} from "@material-ui/core";
 import {DataGrid} from "@material-ui/data-grid";
 import {useAuth} from "../context/auth/AuthContext";
@@ -57,12 +57,10 @@ function GameListTabs(props) {
     }
 
     const addListForm =
-        <Container style={{paddingTop: 25}}>
-            <Card style={{width: '50%', left: '25%', padding: 0}}>
-                <Card.Body>
-                <Form onSubmit={addList}>
-                    <Form.Group>
-                        <Form.Label>New list name:</Form.Label>
+        <Card.Body>
+            <Form onSubmit={addList}>
+                <Form.Row className={"d-flex"}>
+                    <Col>
                         <Form.Control
                             type="text"
                             placeholder="Enter list name"
@@ -70,12 +68,13 @@ function GameListTabs(props) {
                             onChange={e => setNewListName(e.target.value)}
                             required
                         />
-                    </Form.Group>
-                    <Button type="submit" variant="dark">Create New List</Button>
-                </Form>
-                </Card.Body>
-            </Card>
-        </Container>
+                    </Col>
+                    <Col>
+                        <Button type="submit" variant="dark">Create New List</Button>
+                    </Col>
+                </Form.Row>
+            </Form>
+        </Card.Body>
 
     function addList() {
         fetch('/api/addList', {
@@ -99,20 +98,28 @@ function GameListTabs(props) {
     }
 
     return (
-        <Tabs id='uncontrolled-tab' transition={false}
-              onSelect={tabSelect}>
-            {lists.map((list, id) => (
-                <Tab key={id} eventKey={list.name} title={list.name}/>
-            ))}
-            { user === profileUser && listsFound ?
-                <Tab key='add-list' eventKey={'add-list'} title={'+'}>
+        <Card>
+            {user === profileUser && listsFound ?
+                <Card>
                     {addListForm}
-                </Tab>
+                </Card>
                 :
-                <>hey</>
+                <></>
 
             }
-        </Tabs>
+            {lists.map((list, id) => (
+                <Card key={id} style={{padding: 7}}>
+                    <Row>
+                        <Col>
+                        <Card.Link href={profileUser + '/' + list.name}>{list.name}</Card.Link>
+                        </Col>
+                        <Col xs={'auto'} >
+                            <Button style={{ paddingTop: 0, paddingBottom: 0}}>X</Button>
+                        </Col>
+                    </Row>
+                </Card>
+            ))}
+        </Card>
     )
 }
 

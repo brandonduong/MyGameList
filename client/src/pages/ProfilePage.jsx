@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Container, Tab, Tabs} from "react-bootstrap";
+import {Card, Container, Tab, Tabs} from "react-bootstrap";
 import {useParams} from "react-router";
 import {GameListTabs} from "../components/index"
 
