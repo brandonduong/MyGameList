@@ -1,46 +1,81 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form, Tab, Tabs} from "react-bootstrap";
+import {Button, Card, Container, Form, Tab, Tabs} from "react-bootstrap";
 import {Link} from "@material-ui/core";
 import {DataGrid} from "@material-ui/data-grid";
 import {useAuth} from "../context/auth/AuthContext";
+import {useHistory, useParams} from "react-router";
 
 function GameListTabs(props) {
-    const profileUser = props.user
+    const {profileUser} = useParams()
+    const history = useHistory()
 
     const {
         state: {user},
     } = useAuth()
 
-    // Deals with displaying existing lists
-    const [currentList, setCurrentList] = useState([])
-    const [currentListFound, setCurrentListFound] = useState(false)
-
     // Deals with adding new lists
     const [newListName, setNewListName] = useState("")
 
+    const [lists, setLists] = useState([])
+    const [listsFound, setListsFound] = useState(false)
+
+    useEffect(() => {
+        fetch('/api/getLists/' + profileUser, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json()
+
+                } else {
+                    const error = new Error(res.error);
+                    throw error;
+                }
+            })
+            .then(data => {
+                console.log(data)
+                setLists([...data.data])
+                setListsFound(true)
+            })
+            .catch(err => {
+                console.error(err);
+                // Bring up 404 page not found
+            })
+
+    }, [profileUser])
+
     function tabSelect(eventKey) {
         if (eventKey === 'add-list') {
-            // Necessary to reduce lag!
-            setCurrentListFound(false)
+            // Add list form
         } else {
-            getReviews(eventKey)
+            // Link to game list page
+            history.push('/profile/' + profileUser + '/' + eventKey)
         }
     }
 
     const addListForm =
-        <Form onSubmit={addList}>
-            <Form.Group>
-                <Form.Label>New list name:</Form.Label>
-                <Form.Control
-                    type="text"
-                    placeholder="Enter list name"
-                    className="me-lg-5"
-                    onChange={e => setNewListName(e.target.value)}
-                    required
-                />
-            </Form.Group>
-            <Button type="submit" variant="dark">Create New List</Button>
-        </Form>
+        <Container style={{paddingTop: 25}}>
+            <Card style={{width: '50%', left: '25%', padding: 0}}>
+                <Card.Body>
+                <Form onSubmit={addList}>
+                    <Form.Group>
+                        <Form.Label>New list name:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter list name"
+                            className="me-lg-5"
+                            onChange={e => setNewListName(e.target.value)}
+                            required
+                        />
+                    </Form.Group>
+                    <Button type="submit" variant="dark">Create New List</Button>
+                </Form>
+                </Card.Body>
+            </Card>
+        </Container>
 
     function addList() {
         fetch('/api/addList', {
@@ -63,78 +98,20 @@ function GameListTabs(props) {
             })
     }
 
-    function getReviews(list) {
-        setCurrentListFound(false)
-        fetch('/api/getList/' + profileUser + "." + list, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => {
-                if (res.status === 200) {
-                    return res.json()
-
-                } else {
-                    const error = new Error(res.error);
-                    throw error;
-                }
-            })
-            .then(data => {
-                console.log(data)
-                setCurrentList([...data.data])
-                setCurrentListFound(true)
-            })
-            .catch(err => {
-                console.error(err);
-                // Bring up 404 page not found
-            })
-    }
-
-    const columns = [
-        // {field: 'gameId', headerName: 'test', flex: 1},
-        {
-            field: 'title', headerName: 'Title', width: 625, flex: 1,
-            renderCell: (params) => (
-                <strong style={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
-                    <Link to={"/game/" + params.value}>
-                        {params.value}
-                    </Link>
-                </strong>
-            )
-        },
-        {field: 'rating', headerName: 'Rating', width: 450, flex: 0.25},
-        {field: 'hours', headerName: 'Hours', width: 450, flex: 0.25},
-        {field: 'thoughts', headerName: 'Thoughts', width: 450, flex: 1}
-        ]
-
     return (
         <Tabs id='uncontrolled-tab' transition={false}
               onSelect={tabSelect}>
-            {props.lists.map((list, id) => (
-                <Tab key={id} eventKey={list.name} title={list.name}>
-                    {currentListFound ?
-                        <div style={{height: 765, display: 'flex'}}>
-                            <div style={{flexGrow: 1}}>
-                                <DataGrid columns={columns} rows={currentList} columnBuffer={50}
-                                          rowHeight={50}
-                                          pageSize={25} autoHeight={true}
-                                          getRowId={(row) => row._id}/>
-                            </div>
-                        </div>
-                        :
-                        <span>Current list not found.</span>
-                    }
-                </Tab>
+            {lists.map((list, id) => (
+                <Tab key={id} eventKey={list.name} title={list.name}/>
             ))}
-            { user === profileUser ?
+            { user === profileUser && listsFound ?
                 <Tab key='add-list' eventKey={'add-list'} title={'+'}>
                     {addListForm}
                 </Tab>
                 :
-                <></>
-            }
+                <>hey</>
 
+            }
         </Tabs>
     )
 }
