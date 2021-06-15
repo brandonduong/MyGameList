@@ -99,9 +99,20 @@ addList = (req, res) => {
         })
 }
 
+removeList = async (req, res) => {
+    await VideoGameList.findOneAndDelete({name: req.params.list, username: req.username}, (err, list) => {
+        if (err) {
+            return res.status(400).json({success: false, error: err})
+        }
+
+        return res.status(200).json({success: true})
+    }).catch(err => console.log(err))
+}
+
 module.exports = {
     addReview,
     getList,
     getLists,
-    addList
+    addList,
+    removeList
 }
