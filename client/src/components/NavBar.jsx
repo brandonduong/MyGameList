@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 
 import Logo from './Logo'
 import Links from './Links'
-import {Container, DropdownButton, Navbar, Dropdown, NavDropdown, Nav} from "react-bootstrap";
+import {Container, DropdownButton, Navbar, Dropdown, NavDropdown, Nav, Col, Row, NavbarBrand} from "react-bootstrap";
 import {useAuth} from "../context/auth/AuthContext";
 import {SearchBar} from "./index";
 import {useHistory} from "react-router";
@@ -38,14 +38,18 @@ function NavBar() {
 
     return (
         <Navbar bg="dark"  variant="dark">
-            <Container fluid={"sm"}>
+            <Container fluid={'sm'}>
                 <Logo />
-                <Navbar.Brand href="/">
+                <NavbarBrand onClick={onLink("/")} style={{ cursor: 'pointer'}}>
                     MyGameList
-                </Navbar.Brand>
+                </NavbarBrand>
                 <Links />
+                    <Row>
+                        <Col>
                 <SearchBar/>
-                <Nav className="mr-auto">
+                        </Col>
+                        <Col xs={'auto'}>
+                <Nav className="mr-auto" style={{align: 'right'}} >
                 {
                     user &&
                     <NavDropdown id="basic-nav-dropdown" variant="dark" title={user + " "}>
@@ -55,6 +59,7 @@ function NavBar() {
                     </NavDropdown>
                 }
                 </Nav>
+                        </Col></Row>
             </Container>
         </Navbar>
     )
