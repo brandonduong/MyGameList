@@ -111,8 +111,14 @@ removeList = async (req, res) => {
         if (err) {
             return res.status(400).json({success: false, error: err})
         }
-
-        return res.status(200).json({success: true})
+        else {
+            Review.deleteMany({list : list.name}, (err, reviews) => {
+                if (err) {
+                    return res.status(400).json({success: false, error: err})
+                }
+                return res.status(200).json({success: true})
+            })
+        }
     }).catch(err => console.log(err))
 }
 

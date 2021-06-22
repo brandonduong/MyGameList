@@ -1,12 +1,12 @@
 const request = require('request')
-const {client_id, client_secret} = require('../SECRET.js')
+require('dotenv').config()
 
 const options = {
     url: 'https://id.twitch.tv/oauth2/token',
     json:true,
     body: {
-        client_id: client_id,
-        client_secret: client_secret,
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
         grant_type: 'client_credentials'
     }
 };
@@ -64,7 +64,7 @@ function gameRequest(accessToken, gameId, callback){
         method: 'POST',
         body: `fields *; where id = ${gameId};`,
         headers: {
-            'Client-ID': client_id,
+            'Client-ID': process.env.CLIENT_ID,
             'Authorization': 'Bearer ' + accessToken
         }
     }
@@ -92,7 +92,7 @@ function gameSearch(accessToken, query, callback) {
         method: 'POST',
         body: `search "${query}"; fields name, slug, first_release_date, total_rating_count, *; where category = 0; limit 500;`,
         headers: {
-            'Client-ID': client_id,
+            'Client-ID': process.env.CLIENT_ID,
             'Authorization': 'Bearer ' + accessToken
         }
     }

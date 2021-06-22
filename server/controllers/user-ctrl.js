@@ -1,7 +1,7 @@
 const User = require('../models/user-model')
 const VideoGameList = require('../models/videogamelist-model')
 const jwt = require("jsonwebtoken");
-const {secret} = require("../SECRET");
+require('dotenv').config()
 
 createUser = (req, res) => {
     const { username, email, password } = req.body;
@@ -48,7 +48,7 @@ authenticateUser = (req, res) => {
                 } else {
                     // Issue token
                     const payload = { username };
-                    const token = jwt.sign(payload, secret, {
+                    const token = jwt.sign(payload, process.env.SECRET, {
                         expiresIn: '1h'
                     });
                     res.cookie('token', token, { httpOnly: true })
@@ -88,7 +88,7 @@ const withAuth = function(req, res, next) {
     if (!token) {
         res.status(401).send('Unauthorized: No token provided');
     } else {
-        jwt.verify(token, secret, function(err, decoded) {
+        jwt.verify(token, process.env.SECRET, function(err, decoded) {
             if (err) {
                 res.status(401).send('Unauthorized: Invalid token');
             } else {
