@@ -44,15 +44,6 @@ function GameListTabs(props) {
 
     }, [profileUser, listsFound])
 
-    function tabSelect(eventKey) {
-        if (eventKey === 'add-list') {
-            // Add list form
-        } else {
-            // Link to game list page
-            history.push('/profile/' + profileUser + '/' + eventKey)
-        }
-    }
-
     const addListForm =
         <Card.Body>
             <Form onSubmit={addList}>

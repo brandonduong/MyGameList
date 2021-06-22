@@ -20,7 +20,7 @@ addReview = async (req, res) => {
 
     await Review.findOne({username: req.username, list: body.list, gameId: body.gameId}, (err, review) => {
         if (review) {
-            return res.status(400).json({ success: false, error: 'Review for game in list already exists' })
+            return res.status(401).json({ success: false, error: 'Review for game in list already exists' })
         }
         else {
             // username, rating, thoughts, game, hours
@@ -46,6 +46,46 @@ addReview = async (req, res) => {
                 })
         }
     }).catch(err => console.log(err))
+}
+
+updateReview = async (req, res) => {
+    const body = req.body
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+
+    Review.findOne({ _id: req.params.id, username: req.username }, (err, review) => {
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: 'Review not found!',
+            })
+        }
+        if (body.rating) {
+            review.rating = body.rating
+        }
+        else if (body.thoughts) {
+            review.thoughts = body.thoughts
+        }
+        review
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    message: 'Review updated!',
+                })
+            })
+            .catch(error => {
+                return res.status(404).json({
+                    error,
+                    message: 'Review not updated!',
+                })
+            })
+    })
 }
 
 getList = async (req, res) => {
@@ -134,5 +174,6 @@ module.exports = {
     getList,
     getLists,
     addList,
-    removeList
+    removeList,
+    updateReview
 }

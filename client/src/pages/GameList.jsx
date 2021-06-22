@@ -3,6 +3,7 @@ import {DataGrid} from "@material-ui/data-grid";
 import React, {useEffect, useState} from "react";
 import {Link} from "@material-ui/core";
 import {Container} from "react-bootstrap";
+import {forEach} from "react-bootstrap/ElementChildren";
 
 function GameList(props) {
     const {profileUser, listName} = useParams()
@@ -30,6 +31,11 @@ function GameList(props) {
             })
             .then(data => {
                 console.log(data)
+                data.data.forEach(function (item, index) {
+                    // For material ui data grid
+                    item.id = item._id
+                })
+
                 setCurrentList([...data.data])
                 setCurrentListFound(true)
             })
@@ -39,6 +45,46 @@ function GameList(props) {
             })
     }, [listName])
 
+    const handleEditCellChangeCommitted = React.useCallback(
+        ({ id, field, props }) => {
+            if (field === 'thoughts') {
+                const data = props; // Fix eslint value is missing in prop-types for JS files
+                const thoughts = data.value.toString();
+                const updatedRows = currentList.map((row) => {
+
+                    if (row.id === id) {
+                        updateReview(id, thoughts)
+                        return { ...row, thoughts };
+                    }
+                    return row;
+                });
+                setCurrentList(updatedRows);
+            }
+        },
+        [currentList],
+    );
+
+    function updateReview(id, thought) {
+        console.log(id, thought)
+        fetch('/api/updateReview/' + id, {
+            method: 'PUT',
+            body: JSON.stringify({thoughts: thought}),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => {
+                if (res.status === 200) {
+                } else {
+                    const error = new Error(res.error);
+                    throw error;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                // Bring up 404 page not found
+            })
+    }
 
     const columns = [
         // {field: 'gameId', headerName: 'test', flex: 1},
@@ -54,7 +100,7 @@ function GameList(props) {
         },
         {field: 'rating', headerName: 'Rating', width: 450, flex: 0.25},
         {field: 'hours', headerName: 'Hours', width: 450, flex: 0.25},
-        {field: 'thoughts', headerName: 'Thoughts', width: 450, flex: 1}
+        {field: 'thoughts', headerName: 'Thoughts', width: 450, flex: 1, editable: true}
     ]
 
     return (
@@ -63,10 +109,12 @@ function GameList(props) {
                 currentListFound ?
                     <div style={{height: 765, display: 'flex'}}>
                         <div style={{flexGrow: 1}}>
-                            <DataGrid columns={columns} rows={currentList} columnBuffer={50}
+                            <DataGrid columns={columns} rows={currentList}
                                       rowHeight={50}
                                       pageSize={25} autoHeight={true}
-                                      getRowId={(row) => row._id}/>
+                                      getRowId={(row) => row.id}
+                                      onEditCellChangeCommitted={handleEditCellChangeCommitted}
+                            />
                         </div>
                     </div>
                     :
