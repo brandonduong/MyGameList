@@ -59,7 +59,7 @@ getLists = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-addList = (req, res) => {
+addList = async (req, res) => {
     const body = req.body
 
     if (!body) {
@@ -76,27 +76,34 @@ addList = (req, res) => {
         })
     }
 
-    // username, rating, thoughts, game, hours
-    const list = new VideoGameList(body)
+    await VideoGameList.findOne({name: body.name, username: req.username}, (err, list) => {
+        if (list) {
+            return res.status(400).json({success: false, error: 'List with name already exists'})
+        }
+        else {
+            // username, rating, thoughts, game, hours
+            const list = new VideoGameList(body)
 
-    if (!list) {
-        return res.status(400).json({ success: false, error: err })
-    }
+            if (!list) {
+                return res.status(400).json({ success: false, error: err })
+            }
 
-    list
-        .save()
-        .then(() => {
-            return res.status(200).json({
-                success: true,
-                message: 'List created!',
-            })
-        })
-        .catch(error => {
-            return res.status(400).json({
-                error,
-                message: 'List not created!',
-            })
-        })
+            list
+                .save()
+                .then(() => {
+                    return res.status(200).json({
+                        success: true,
+                        message: 'List created!',
+                    })
+                })
+                .catch(error => {
+                    return res.status(400).json({
+                        error,
+                        message: 'List not created!',
+                    })
+                })
+        }
+    }).catch(err => console.log(err))
 }
 
 removeList = async (req, res) => {
