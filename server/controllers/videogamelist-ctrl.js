@@ -1,7 +1,7 @@
 const VideoGameList = require('../models/videogamelist-model')
 const Review = require('../models/review-model')
 
-addReview = (req, res) => {
+addReview = async (req, res) => {
     const body = req.body
 
     if (!body) {
@@ -18,27 +18,34 @@ addReview = (req, res) => {
         })
     }
 
-    // username, rating, thoughts, game, hours
-    const listing = new Review(body)
+    await Review.findOne({username: req.username, list: body.list, gameId: body.gameId}, (err, review) => {
+        if (review) {
+            return res.status(400).json({ success: false, error: 'Review for game in list already exists' })
+        }
+        else {
+            // username, rating, thoughts, game, hours
+            const listing = new Review(body)
 
-    if (!listing) {
-        return res.status(400).json({ success: false, error: err })
-    }
+            if (!listing) {
+                return res.status(400).json({ success: false, error: err })
+            }
 
-    listing
-        .save()
-        .then(() => {
-            return res.status(200).json({
-                success: true,
-                message: 'Review created!',
-            })
-        })
-        .catch(error => {
-            return res.status(400).json({
-                error,
-                message: 'Review not created!',
-            })
-        })
+            listing
+                .save()
+                .then(() => {
+                    return res.status(200).json({
+                        success: true,
+                        message: 'Review created!',
+                    })
+                })
+                .catch(error => {
+                    return res.status(400).json({
+                        error,
+                        message: 'Review not created!',
+                    })
+                })
+        }
+    }).catch(err => console.log(err))
 }
 
 getList = async (req, res) => {

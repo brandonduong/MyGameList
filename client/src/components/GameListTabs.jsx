@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, Col, Container, Form, ListGroupItem, Row, Tab, Tabs} from "react-bootstrap";
-import {Link} from "@material-ui/core";
-import {DataGrid} from "@material-ui/data-grid";
+import {Button, Card, Col, Form, ListGroupItem, Row} from "react-bootstrap";
 import {useAuth} from "../context/auth/AuthContext";
 import {useHistory, useParams} from "react-router";
 
