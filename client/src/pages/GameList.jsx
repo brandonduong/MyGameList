@@ -11,6 +11,7 @@ function GameList(props) {
     // Deals with displaying existing lists
     const [currentList, setCurrentList] = useState([])
     const [currentListFound, setCurrentListFound] = useState(false)
+    const [editReviewSuccess, setEditReviewSuccess] = useState(true)
 
     useEffect(() => {
         console.log(listName)
@@ -47,14 +48,26 @@ function GameList(props) {
 
     const handleEditCellChangeCommitted = React.useCallback(
         ({ id, field, props }) => {
+            const data = props; // Fix eslint value is missing in prop-types for JS files
             if (field === 'thoughts') {
-                const data = props; // Fix eslint value is missing in prop-types for JS files
                 const thoughts = data.value.toString();
                 const updatedRows = currentList.map((row) => {
 
                     if (row.id === id) {
-                        updateReview(id, thoughts)
+                        updateReview(id, JSON.stringify({thoughts}))
                         return { ...row, thoughts };
+                    }
+                    return row;
+                });
+                setCurrentList(updatedRows);
+            }
+            else if (field === 'rating') {
+                const rating = data.value.toString();
+                const updatedRows = currentList.map((row) => {
+
+                    if (row.id === id) {
+                        updateReview(id, JSON.stringify({rating}))
+                        return { ...row, rating };
                     }
                     return row;
                 });
@@ -64,17 +77,18 @@ function GameList(props) {
         [currentList],
     );
 
-    function updateReview(id, thought) {
-        console.log(id, thought)
+    function updateReview(id, change) {
+        console.log(id, change)
         fetch('/api/updateReview/' + id, {
             method: 'PUT',
-            body: JSON.stringify({thoughts: thought}),
+            body: change,
             headers: {
                 'Content-Type': 'application/json'
             }
         })
             .then(res => {
                 if (res.status === 200) {
+                    setEditReviewSuccess(true)
                 } else {
                     const error = new Error(res.error);
                     throw error;
@@ -82,6 +96,7 @@ function GameList(props) {
             })
             .catch(err => {
                 console.error(err);
+                setEditReviewSuccess(false)
                 // Bring up 404 page not found
             })
     }
@@ -98,8 +113,8 @@ function GameList(props) {
                 </strong>
             )
         },
-        {field: 'rating', headerName: 'Rating', width: 450, flex: 0.25},
-        {field: 'hours', headerName: 'Hours', width: 450, flex: 0.25},
+        {field: 'rating', headerName: 'Rating', width: 450, flex: 0.25, editable: true},
+        {field: 'hours', headerName: 'Hours', width: 450, flex: 0.25, editable: true},
         {field: 'thoughts', headerName: 'Thoughts', width: 450, flex: 1, editable: true}
     ]
 
