@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {useParams} from "react-router";
-import {Box, Card, Typography} from "@material-ui/core";
+import {Card} from "@material-ui/core";
 import {Rating} from "@material-ui/lab";
 import {useAuth} from "../context/auth/AuthContext";
 
@@ -16,9 +16,9 @@ function GameInfo(props) {
     const [gameFound, setGameFound] = useState(false)
     const [starForAdding, setStarForAdding] = useState(0)
     const [hoursForAdding, setHoursForAdding] = useState("")
-    const [listToAddTo, setListToAddTo] = useState("Default")
-    const [userLists, setUserLists] = useState([])
-    const [alreadyReviewed, setAlreadyReviewed] = useState(false)
+    const [listToAddTo, setListToAddTo] = useState("")
+    const [lists, setLists] = useState([])
+    //const [alreadyReviewed, setAlreadyReviewed] = useState(false)
 
     const {
         state: {user},
@@ -51,6 +51,29 @@ function GameInfo(props) {
             .catch(err => {
                 console.error(err);
             });
+        fetch('/api/getLists/' + user, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json()
+
+                } else {
+                    const error = new Error(res.error);
+                    throw error;
+                }
+            })
+            .then(data => {
+                console.log(data)
+                setLists([...data.data])
+            })
+            .catch(err => {
+                console.error(err);
+                // Bring up 404 page not found
+            })
 
 
     }, [gameId])
@@ -74,7 +97,7 @@ function GameInfo(props) {
             })
             .catch(err => {
                 console.error(err);
-                alert('Error creating review.');
+                alert(`Review for ${info.title} already exists in ${listToAddTo}`);
             });
     }
 
@@ -85,11 +108,11 @@ function GameInfo(props) {
                     <Card>
                         <Row>
                             <Col>
-                                <Form.Label style={{paddingTop: 5}}>Star Rating:</Form.Label>
+                                <Form.Label style={{paddingTop: 5, paddingLeft: 5}}>Star Rating:</Form.Label>
                             </Col>
                             <Col>
                                 <Rating
-                                    style={{marginTop: 5}}
+                                    style={{paddingTop: 6, paddingRight: 5}}
                                     name="starsForAdding"
                                     defaultValue={0}
                                     max={10}
@@ -113,9 +136,11 @@ function GameInfo(props) {
                 </Col>
 
                 <Col xs="auto">
-                    <Form.Control as="select" defaultValue="Choose..." required>
+                    <Form.Control as="select" value={listToAddTo} onChange={e => setListToAddTo(e.target.value)} required>
                         <option>Choose list...</option>
-                        <option>...</option>
+                        {lists.map((list, key) => (
+                            <option key={key}>{list.name}</option>
+                        ))}
                     </Form.Control>
                 </Col>
 
