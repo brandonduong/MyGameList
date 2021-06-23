@@ -59,7 +59,7 @@ updateReview = async (req, res) => {
     }
 
     Review.findOne({ _id: req.params.id, username: req.username }, (err, review) => {
-        if (err) {
+        if (err || !review) {
             return res.status(404).json({
                 err,
                 message: 'Review not found!',
@@ -155,7 +155,7 @@ addList = async (req, res) => {
 
 removeList = async (req, res) => {
     await VideoGameList.findOneAndDelete({name: req.params.list, username: req.username}, (err, list) => {
-        if (err) {
+        if (err || !list) {
             return res.status(400).json({success: false, error: err})
         }
         else {

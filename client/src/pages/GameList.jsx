@@ -1,17 +1,22 @@
-import {useParams} from "react-router";
+import {useHistory, useParams} from "react-router";
 import {DataGrid} from "@material-ui/data-grid";
 import React, {useEffect, useState} from "react";
 import {Link} from "@material-ui/core";
-import {Container} from "react-bootstrap";
-import {forEach} from "react-bootstrap/ElementChildren";
+import {Container, ListGroupItem} from "react-bootstrap";
+import {useAuth} from "../context/auth/AuthContext";
 
 function GameList(props) {
     const {profileUser, listName} = useParams()
+    const history = useHistory()
+
+    const {
+        state: {user},
+    } = useAuth()
 
     // Deals with displaying existing lists
     const [currentList, setCurrentList] = useState([])
     const [currentListFound, setCurrentListFound] = useState(false)
-    const [editReviewSuccess, setEditReviewSuccess] = useState(true)
+    const [columns, setColumns] = useState([])
 
     useEffect(() => {
         console.log(listName)
@@ -44,6 +49,12 @@ function GameList(props) {
                 console.error(err);
                 // Bring up 404 page not found
             })
+        if (profileUser === user) {
+            setColumns(ownerColumns)
+        }
+        else {
+            setColumns(strangerColumns)
+        }
     }, [listName])
 
     const handleEditCellChangeCommitted = React.useCallback(
@@ -62,12 +73,24 @@ function GameList(props) {
                 setCurrentList(updatedRows);
             }
             else if (field === 'rating') {
-                const rating = data.value.toString();
+                const rating = data.value;
                 const updatedRows = currentList.map((row) => {
 
-                    if (row.id === id) {
+                    if (row.id === id && rating >= 0 && rating <= 10) {
                         updateReview(id, JSON.stringify({rating}))
                         return { ...row, rating };
+                    }
+                    return row;
+                });
+                setCurrentList(updatedRows);
+            }
+            else if (field === 'hours') {
+                const hours = data.value;
+                const updatedRows = currentList.map((row) => {
+
+                    if (row.id === id && hours >= 0) {
+                        updateReview(id, JSON.stringify({hours}))
+                        return { ...row, hours };
                     }
                     return row;
                 });
@@ -88,7 +111,7 @@ function GameList(props) {
         })
             .then(res => {
                 if (res.status === 200) {
-                    setEditReviewSuccess(true)
+
                 } else {
                     const error = new Error(res.error);
                     throw error;
@@ -96,12 +119,11 @@ function GameList(props) {
             })
             .catch(err => {
                 console.error(err);
-                setEditReviewSuccess(false)
                 // Bring up 404 page not found
             })
     }
 
-    const columns = [
+    const ownerColumns = [
         // {field: 'gameId', headerName: 'test', flex: 1},
         {
             field: 'title', headerName: 'Title', width: 625, flex: 1,
@@ -118,8 +140,25 @@ function GameList(props) {
         {field: 'thoughts', headerName: 'Thoughts', width: 450, flex: 1, editable: true}
     ]
 
+    const strangerColumns = [
+        {
+            field: 'title', headerName: 'Title', width: 625, flex: 1,
+            renderCell: (params) => (
+                <strong style={{overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                    <Link to={"/game/" + params.value}>
+                        {params.value}
+                    </Link>
+                </strong>
+            )
+        },
+        {field: 'rating', headerName: 'Rating', width: 450, flex: 0.25},
+        {field: 'hours', headerName: 'Hours', width: 450, flex: 0.25},
+        {field: 'thoughts', headerName: 'Thoughts', width: 450, flex: 1}
+    ]
+
     return (
         <Container fluid={"sm"} style={{paddingTop: 25}}>
+            <ListGroupItem key={'BackToLists'} action onClick={() => history.push('../' + profileUser)}>Back to {profileUser}'s Lists</ListGroupItem>
             {
                 currentListFound ?
                     <div style={{height: 765, display: 'flex'}}>
