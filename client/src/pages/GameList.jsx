@@ -168,6 +168,7 @@ function GameList(props) {
                 </Card.Header>
 
                 <Card.Body style={{flexGrow: 1}}>
+                    <h1>{listName}</h1>
                     {
                         currentListFound ?
                             <div style={{paddingTop: 25}}>
