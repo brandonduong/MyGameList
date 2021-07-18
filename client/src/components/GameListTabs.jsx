@@ -136,7 +136,7 @@ function GameListTabs(props) {
                         </Col>
                         {user === profileUser &&
                             <Col xs={'auto'} >
-                                <Button className={"submit-button"} nClick={() => deleteList(list.name)} style={{ paddingTop: 8, paddingBottom: 8, marginRight: 1}}>X</Button>
+                                <Button className={"submit-button"} onClick={() => deleteList(list.name)} style={{ paddingTop: 8, paddingBottom: 8, marginRight: 1}}>X</Button>
                             </Col>
                         }
                     </Row>
