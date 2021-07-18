@@ -184,6 +184,7 @@ function GameList(props) {
                             :
                             <span>Current list not found.</span>
                     }
+                    <small>Double click any cell to edit!</small>
                 </Card.Body>
             </Card>
         </Container>
