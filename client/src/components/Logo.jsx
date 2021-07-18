@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 
-import logo from '../logo.svg'
+import logo from '../logo.png'
 import {useHistory} from "react-router";
 
 const Wrapper = styled.a.attrs({
     className: 'navbar-brand',
-})`margin-left: -5px;
-margin-right: 0`
+})`margin-left: 10px;
+margin-right: 10px;`
 
 function Logo() {
 
@@ -20,7 +20,7 @@ function Logo() {
 
     return (
             <Wrapper onClick={onLink("/")} style={{ cursor: 'pointer'}}>
-                <img src={logo} width={50} height={50} alt={"/"}/>
+                <img src={logo} width={45} height={45} alt={"/"}/>
 
             </Wrapper>
     )

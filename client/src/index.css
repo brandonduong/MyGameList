@@ -1,3 +1,10 @@
+:root {
+  --page-color: #c0d7d7;
+  --accent-color: #548080;
+  --inactive-tab-color: #87a0a0;
+  --nav-bar-color: #4c5769;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -7,7 +14,59 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.general-container {
+  background-color: var(--page-color);
+  max-height: 200vh;
+  min-height: 100vh;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.nav-link.active {
+  color: white !important;
+  background-color: var(--accent-color) !important;
+}
+
+.nav-link:hover {
+  background-color: var(--accent-color) !important;
+  color: white !important;
+  border-radius: 15px;
+}
+
+.inactive-tab {
+  background-color: var(--inactive-tab-color) !important;
+}
+
+.nav-link {
+  color: white !important;
+  font-size: larger;
+  border-radius: 15px;
+}
+
+.submit-button {
+  background-color: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+}
+
+.submit-button:hover {
+  background-color: #416464 !important;
+}
+
+.nav-bar {
+  background-color: var(--nav-bar-color) !important;
+}
+
+h1, form, strong {
+  color: var(--accent-color) !important;
+}
+
+h5, small {
+  color: var(--nav-bar-color) !important;
+}
+
+.list-item {
+  color: var(--accent-color) !important;
 }

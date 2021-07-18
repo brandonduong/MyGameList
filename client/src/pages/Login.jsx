@@ -81,7 +81,7 @@ function Login(props) {
                 */}
                 <br></br>
             </Form.Group>
-            <Button type="submit" variant="dark">Login</Button>
+            <Button type="submit" className={"submit-button"} variant="dark">Login</Button>
         </Form>
 
 
@@ -89,7 +89,7 @@ function Login(props) {
         <Container style={{paddingTop: 25}}>
             <Card style={{width: '50%', left: '25%', padding: 0}}>
                 <Card.Header>
-                    <h2>Login to existing account</h2>
+                    <h1>Login to existing account</h1>
                 </Card.Header>
 
                 <Card.Body>

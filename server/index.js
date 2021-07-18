@@ -4,6 +4,8 @@ const cors = require('cors')
 
 const db = require('./db')
 const userRouter = require('./routes/user-router')
+const videogamelistRouter = require('./routes/video-game-list-router')
+const gameRouter = require('./routes/game-router')
 const cookieParser = require('cookie-parser')
 
 const app = express()
@@ -21,6 +23,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api', userRouter)
-
+app.use('/api', videogamelistRouter)
+app.use('/api', gameRouter)
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`))

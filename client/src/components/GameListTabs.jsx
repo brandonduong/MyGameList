@@ -47,7 +47,7 @@ function GameListTabs(props) {
     const addListForm =
         <Card.Body>
             <Form onSubmit={addList}>
-                <Form.Row className={"d-flex"}>
+                <Row>
                     <Col>
                         <Form.Control
                             type="text"
@@ -58,10 +58,10 @@ function GameListTabs(props) {
                             required
                         />
                     </Col>
-                    <Col>
-                        <Button type="submit" variant="dark">Create New List</Button>
+                    <Col xs={'auto'}>
+                        <Button type="submit" className={"submit-button"}>Create New List</Button>
                     </Col>
-                </Form.Row>
+                </Row>
             </Form>
         </Card.Body>
 
@@ -128,14 +128,15 @@ function GameListTabs(props) {
             {lists.map((list, id) => (
                 <Card id={id} key={id} style={{padding: 0}}>
                     <Row>
-                        <Col>
-                        <ListGroupItem onClick={() => linkToList(profileUser + '/' + list.name)} style={{
-                            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
-                            {list.name}</ListGroupItem>
+                        <Col style={{paddingLeft: 28}}>
+                            <ListGroupItem action onClick={() => linkToList(profileUser + '/' + list.name)} style={{
+                                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                                <strong>{list.name}</strong>
+                            </ListGroupItem>
                         </Col>
                         {user === profileUser &&
                             <Col xs={'auto'} >
-                                <Button onClick={() => deleteList(list.name)} style={{ paddingTop: 8, paddingBottom: 8}}>X</Button>
+                                <Button className={"submit-button"} nClick={() => deleteList(list.name)} style={{ paddingTop: 8, paddingBottom: 8, marginRight: 1}}>X</Button>
                             </Col>
                         }
                     </Row>

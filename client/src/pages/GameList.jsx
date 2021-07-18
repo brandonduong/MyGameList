@@ -2,7 +2,7 @@ import {useHistory, useParams} from "react-router";
 import {DataGrid} from "@material-ui/data-grid";
 import React, {useEffect, useState} from "react";
 import {Link} from "@material-ui/core";
-import {Container, ListGroupItem} from "react-bootstrap";
+import {Card, Container, ListGroupItem} from "react-bootstrap";
 import {useAuth} from "../context/auth/AuthContext";
 
 function GameList(props) {
@@ -158,22 +158,33 @@ function GameList(props) {
 
     return (
         <Container fluid={"sm"} style={{paddingTop: 25}}>
-            <ListGroupItem key={'BackToLists'} action onClick={() => history.push('../' + profileUser)}>Back to {profileUser}'s Lists</ListGroupItem>
-            {
-                currentListFound ?
-                    <div style={{height: 765, display: 'flex'}}>
-                        <div style={{flexGrow: 1}}>
-                            <DataGrid columns={columns} rows={currentList}
-                                      rowHeight={50}
-                                      pageSize={25} autoHeight={true}
-                                      getRowId={(row) => row.id}
-                                      onEditCellChangeCommitted={handleEditCellChangeCommitted}
-                            />
-                        </div>
-                    </div>
-                    :
-                    <span>Current list not found.</span>
-            }
+
+            <Card style={{width: '100%', padding: 0}}>
+                <Card.Header>
+                    <ListGroupItem style={{marginTop: 10, marginBottom: 10}} key={'BackToLists'} action
+                                   onClick={() => history.push('../' + profileUser)}><strong>Back to {profileUser}'s Lists
+                    </strong>
+                    </ListGroupItem>
+                </Card.Header>
+
+                <Card.Body style={{flexGrow: 1}}>
+                    {
+                        currentListFound ?
+                            <div style={{paddingTop: 25}}>
+                                <div>
+                                    <DataGrid columns={columns} rows={currentList}
+                                              rowHeight={50}
+                                              pageSize={25} autoHeight={true}
+                                              getRowId={(row) => row.id}
+                                              onEditCellChangeCommitted={handleEditCellChangeCommitted}
+                                    />
+                                </div>
+                            </div>
+                            :
+                            <span>Current list not found.</span>
+                    }
+                </Card.Body>
+            </Card>
         </Container>
     )
 }

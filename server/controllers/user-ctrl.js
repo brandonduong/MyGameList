@@ -76,7 +76,7 @@ profileInfo = (req, res) => {
         } else {
             res.status(200)
                 .json({
-                    join_date: userObj.createdAt
+                    join_date: new Date(userObj.createdAt).toDateString()
                 })
         }
     })

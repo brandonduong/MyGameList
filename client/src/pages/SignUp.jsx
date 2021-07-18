@@ -76,14 +76,14 @@ function SignUp(props) {
                 */}
                 <br></br>
             </Form.Group>
-            <Button type ="submit" variant="dark">Signup</Button>
+            <Button type="submit" className={"submit-button"} variant="dark">Signup</Button>
         </Form>
 
     return (
         <Container style={{paddingTop: 25}}>
             <Card style={{width: '50%', left: '25%', padding: 0}}>
                 <Card.Header>
-                    <h2>Create new account</h2>
+                    <h1>Create new account</h1>
                 </Card.Header>
 
                 <Card.Body>

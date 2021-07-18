@@ -7,6 +7,7 @@ server/node_modules
 .pnp.js
 .idea
 server/.env
+client/src/logo.psd
 
 # testing
 /coverage

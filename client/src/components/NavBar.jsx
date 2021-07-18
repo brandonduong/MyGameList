@@ -37,29 +37,30 @@ function NavBar() {
     )
 
     return (
-        <Navbar bg="dark"  variant="dark">
+        <Navbar variant="dark" className={"nav-bar"}>
             <Container fluid={'sm'}>
                 <Logo />
                 <NavbarBrand onClick={onLink("/")} style={{ cursor: 'pointer'}}>
                     MyGameList
                 </NavbarBrand>
                 <Links />
-                    <Row>
-                        <Col>
-                <SearchBar/>
-                        </Col>
-                        <Col xs={'auto'}>
-                <Nav className="mr-auto" style={{align: 'right'}} >
-                {
-                    user &&
-                    <NavDropdown id="basic-nav-dropdown" variant="dark" title={user + " "}>
-                        <NavDropdown.Item onClick={onLink("/profile/" + user)}>Profile</NavDropdown.Item>
-                        <NavDropdown.Item onClick={onLink("/")}>Account Settings</NavDropdown.Item>
-                        <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
-                    </NavDropdown>
-                }
-                </Nav>
-                        </Col></Row>
+                <Row>
+                    <Col>
+                    <SearchBar/>
+                    </Col>
+                    <Col xs={'auto'}>
+                        <Nav className="mr-auto">
+                        {
+                            user &&
+                            <NavDropdown id="basic-nav-dropdown" variant="dark" title={user + " "}>
+                                <NavDropdown.Item onClick={onLink("/profile/" + user)}>Profile</NavDropdown.Item>
+                                <NavDropdown.Item onClick={onLink("/")}>Account Settings</NavDropdown.Item>
+                                <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
+                            </NavDropdown>
+                        }
+                        </Nav>
+                    </Col>
+                </Row>
             </Container>
         </Navbar>
     )

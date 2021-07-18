@@ -6,7 +6,7 @@ import {Rating} from "@material-ui/lab";
 import {useAuth} from "../context/auth/AuthContext";
 
 function GameInfo(props) {
-    const { gameId } = useParams()
+    const {gameId} = useParams()
     const [info, setInfo] = useState({
         title: '',
         rating: 0,
@@ -82,14 +82,23 @@ function GameInfo(props) {
         event.preventDefault();
         fetch('/api/addToList', {
             method: 'POST',
-            body: JSON.stringify({list: listToAddTo, rating: starForAdding, gameId: gameId, title: info.title, username: user, hours: hoursForAdding}),
+            body: JSON.stringify({
+                list: listToAddTo,
+                rating: starForAdding,
+                gameId: gameId,
+                title: info.title,
+                username: user,
+                hours: hoursForAdding
+            }),
             headers: {
                 'Content-Type': 'application/json'
             }
         })
             .then(res => {
                 if (res.status === 200) {
-
+                    setListToAddTo("")
+                    setHoursForAdding("")
+                    setStarForAdding(0)
                 } else {
                     const error = new Error(res.error);
                     throw error;
@@ -136,7 +145,8 @@ function GameInfo(props) {
                 </Col>
 
                 <Col xs="auto">
-                    <Form.Control as="select" value={listToAddTo} onChange={e => setListToAddTo(e.target.value)} required>
+                    <Form.Control as="select" value={listToAddTo} onChange={e => setListToAddTo(e.target.value)}
+                                  required>
                         <option>Choose list...</option>
                         {lists.map((list, key) => (
                             <option key={key}>{list.name}</option>
@@ -145,7 +155,7 @@ function GameInfo(props) {
                 </Col>
 
                 <Col xs="auto">
-                    <Button type="submit" variant={"dark"}>
+                    <Button type="submit" className={"submit-button"} variant={"dark"}>
                         Add to list
                     </Button>
                 </Col>

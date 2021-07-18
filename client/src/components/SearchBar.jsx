@@ -14,7 +14,7 @@ function SearchBar() {
     }
 
     return (
-        <Form inline onSubmit={onSearch}>
+        <Form inline onSubmit={onSearch} style={{paddingTop: 5, paddingBottom: 5}}>
             <Form.Row className={"d-flex"}>
                 <Col xs={"auto"}>
                     <FormControl type="text" placeholder="Search"
@@ -23,7 +23,7 @@ function SearchBar() {
                     />
                 </Col>
                 <Col xs={"auto"} style={{paddingRight: 15}}>
-                    <Button type="submit" variant="dark" onClick={onSearch}><Search /></Button>
+                    <Button type="submit" variant="dark" className={"submit-button"} onClick={onSearch}><Search /></Button>
                 </Col>
             </Form.Row>
         </Form>

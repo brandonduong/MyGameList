@@ -73,16 +73,16 @@ function SearchResults(props) {
     ]
 
 
-    return <Container style={{paddingTop: 25}}>
+    return <Container style={{paddingTop: 25, paddingBottom: 25}}>
         <Card style={{width: '100%', padding: 0}}>
             <Card.Header>
-                <h2>Search results for: {query}</h2>
+                <h1>Search results for: {query}</h1>
             </Card.Header>
 
             <Card.Body>
                 {
                     searchFound ?
-                        <div style={{ height: 765, width: '100%' }}>
+                        <div style={{ height: 735, width: '100%' }}>
                             <DataGrid rows={response} columns={columns} columnBuffer={50} rowHeight={50}
                                       pageSize={pageSize} disableSelectionOnClick />
                         </div>

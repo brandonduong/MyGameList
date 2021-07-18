@@ -7,10 +7,6 @@ import {Spa} from "@material-ui/icons";
 function UserProfileInfo(props) {
     const {profileUser} = useParams()
 
-    const {
-        state: {user},
-    } = useAuth()
-
     const [join_date, setJoinDate] = useState("")
     const [profileFound, setProfileFound] = useState(false)
 
@@ -49,7 +45,7 @@ function UserProfileInfo(props) {
             {profileFound ?
                 <span>
                     <h1>{profileUser}</h1>
-                    Joined: {join_date}
+                    <h5>Member since <em>{join_date}</em></h5>
                     <hr/>
                 </span>
                 :
