@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import styled from "styled-components";
 import {Col, Container} from "react-bootstrap";
+import GoogleAds from "../components/GoogleAds";
 
 const Wrapper = styled.div.attrs({
     className: 'container',
@@ -37,8 +38,6 @@ export default class Home extends Component {
                 <h5 style={{fontSize: 30, paddingRight: '40%', overflow: 'visible', fontFamily:'Monaco'}}>
                     Start your journey now by searching for a video game you want to remember forever!
                 </h5>
-
-
             </Container>
         );
     }

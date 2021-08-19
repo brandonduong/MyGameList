@@ -14,7 +14,6 @@ function NavBar() {
         dispatch
     } = useAuth()
 
-
     const history = useHistory()
 
     const onLink = (url) => (event) => {

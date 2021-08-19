@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import {Button, Col, Container, Form, Image, Row} from "react-bootstrap";
 import {useParams} from "react-router";
 import {Card} from "@material-ui/core";
 import {Rating} from "@material-ui/lab";
 import {useAuth} from "../context/auth/AuthContext";
+import logo from "../logo.png";
 
 function GameInfo(props) {
     const {gameId} = useParams()
@@ -45,7 +46,7 @@ function GameInfo(props) {
                 }
             })
             .then(data => {
-                setInfo({title: data[0].name})
+                setInfo({title: data[0].name, cover: data[0].cover.url.replace('t_thumb', 't_cover_big')})
                 setGameFound(true)
             })
             .catch(err => {
@@ -167,6 +168,7 @@ function GameInfo(props) {
             {gameFound ?
                 <span>
                     <h1>Game Info Page for: {info.title}</h1>
+                    <img src={info.cover} width={264} height={374}  alt={info.title}/>
                     {addToListForm}
                 </span>
 
