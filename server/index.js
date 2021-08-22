@@ -7,10 +7,12 @@ const userRouter = require('./routes/user-router')
 const videogamelistRouter = require('./routes/video-game-list-router')
 const gameRouter = require('./routes/game-router')
 const cookieParser = require('cookie-parser')
+const path = require("path");
 
 const app = express()
-const apiPort = 3000
+const apiPort = process.env.PORT || 3000
 
+app.use(express.static(path.join(__dirname, "build")))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(cors())
 app.use(bodyParser.json())
