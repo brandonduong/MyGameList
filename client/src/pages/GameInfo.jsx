@@ -46,7 +46,8 @@ function GameInfo(props) {
                 }
             })
             .then(data => {
-                setInfo({title: data[0].name, cover: data[0].cover.url.replace('t_thumb', 't_cover_big')})
+                setInfo({title: data[0].name, cover: data[0].cover.url.replace('t_thumb', 't_cover_big'),
+                    first_release_date: new Date(data[0].first_release_date * 1000).toDateString().split('').splice(4).join('')})
                 setGameFound(true)
             })
             .catch(err => {
@@ -167,7 +168,9 @@ function GameInfo(props) {
         <Container style={{paddingTop: 25}}>
             {gameFound ?
                 <span>
-                    <h1>Game Info Page for: {info.title}</h1>
+                    <h1>{info.title}</h1>
+                    <h5>First released <em>{info.first_release_date}</em></h5>
+                    <hr/>
                     <img src={info.cover} width={264} height={374}  alt={info.title}/>
                     {addToListForm}
                 </span>

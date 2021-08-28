@@ -62,7 +62,7 @@ function gameRequest(accessToken, gameId, callback){
     const gameOptions = {
         url: 'https://api.igdb.com/v4/games',
         method: 'POST',
-        body: `fields name, cover.*; where id = ${gameId};`,
+        body: `fields name, summary, videos.*, artworks.url, artworks.width, artworks.height, first_release_date, cover.url, genres.name, involved_companies.*, involved_companies.company.name, similar_games.id; where category = 0; where id = ${gameId};`,
         headers: {
             'Client-ID': process.env.CLIENT_ID,
             'Authorization': 'Bearer ' + accessToken
