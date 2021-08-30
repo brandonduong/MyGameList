@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  Card, Container, Tab, Tabs,
+  Container, Tab, Tabs,
 } from 'react-bootstrap';
-import { useParams } from 'react-router';
 import { GameListTabs } from '../components/index';
 import UserProfileInfo from '../components/UserProfileInfo';
 
-function Profile(props) {
+function Profile() {
   const [key, setKey] = useState('gameLists');
 
   return (

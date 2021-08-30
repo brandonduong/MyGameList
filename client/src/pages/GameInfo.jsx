@@ -29,8 +29,6 @@ function GameInfo() {
     state: { user },
   } = useAuth();
 
-  const onChange = (e) => setHoursForAdding(e.target.value);
-
   useEffect(() => {
     console.log(gameId);
     fetch('/api/game', {
@@ -169,7 +167,7 @@ function GameInfo() {
               name="hours"
               placeholder="Hours"
               value={hoursForAdding}
-              onChange={onChange}
+              onChange={(e) => { if (e.target.value > -1) setHoursForAdding(e.target.value); }}
               required
             />
           </Col>
@@ -242,7 +240,24 @@ function GameInfo() {
           >
             <div style={{ paddingBottom: 5, paddingRight: 10 }}>
               <b>
-                <small>HOURS</small>
+                <small>AVG HOURS</small>
+              </b>
+            </div>
+            <div>
+              <h3><strong>{cumulativeHours / members < 999999 ? Math.round(((cumulativeHours / members) + Number.EPSILON) * 100) / 100 : '>999999'}</strong></h3>
+            </div>
+          </div>
+        </Col>
+        <Col xs="auto">
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          >
+            <div style={{ paddingBottom: 5, paddingRight: 10 }}>
+              <b>
+                <small>CUMULATIVE HOURS</small>
               </b>
             </div>
             <div>

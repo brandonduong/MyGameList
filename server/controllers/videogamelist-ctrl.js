@@ -34,7 +34,7 @@ addReview = async (req, res) => {
             listing
                 .save()
                 .then(() => {
-                    updateGameScore(body.gameId)
+                    updateGameScore(body.gameId, listing)
                     return res.status(200).json({
                         success: true,
                         message: 'Review created!',
@@ -50,7 +50,7 @@ addReview = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-async function updateGameScore(gameId){
+async function updateGameScore(gameId, review){
     VideoGame.findOne({gameId: gameId},(err, game) => {
     if (err) {
         return res.status(404).json({
@@ -59,7 +59,7 @@ async function updateGameScore(gameId){
         })
     } else if (!game) {
         console.log('Creating new entry')
-        const newGame = new VideoGame({gameId: gameId})
+        const newGame = new VideoGame({gameId: gameId, rating: review.rating, members: 1, cumulativeHours: review.hours})
         newGame.save()
     } else if (game) {
         // Get all reviews of gameId to calculate score + members + ranking
@@ -82,7 +82,7 @@ async function updateGameScore(gameId){
             game.rating = Math.round(((totalRating / reviewers.size) + Number.EPSILON) * 100) / 100
             game.members = reviewers.size
             game.locked = false
-            game.cumulativeHours = totalHours
+            game.cumulativeHours = Math.round(((totalHours) + Number.EPSILON) * 100) / 100
             game.save()
         }).catch(err => console.log(err))
     }
@@ -110,9 +110,11 @@ updateReview = async (req, res) => {
         if (body.rating) {
             updateRating = true;
             review.rating = body.rating
-        }
-        else if (body.thoughts) {
+        } else if (body.thoughts) {
             review.thoughts = body.thoughts
+        } else if (body.hours) {
+            updateRating = true;
+            review.hours = body.hours
         }
         review
             .save()

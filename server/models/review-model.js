@@ -7,7 +7,7 @@ const Review = new Schema ({
     thoughts: { type: String, required: false, default: '' },
     title: { type: String, required: true},
     gameId: { type: Number, required: true },
-    hours: {type: Number, required: true, default: 0},
+    hours: {type: Number, required: true, default: 0, max: 9999},
     list: {type: String, required: true}
     },
     { timestamps: true }
