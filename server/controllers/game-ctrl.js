@@ -1,5 +1,6 @@
 const request = require('request')
 require('dotenv').config()
+const Review = require('../models/review-model')
 
 const options = {
     url: 'https://id.twitch.tv/oauth2/token',
@@ -37,14 +38,20 @@ gameInfo = (req, res) => {
     setTimeout(() => {
     let promise = new Promise(function (resolve, reject) {
         gameRequest(AT, gameId, function (err, result) {
-            info = result
-            resolve()
+
+            // Get all reviews of gameId to calculate score + members + ranking
+            Review.find({gameId: gameId}, {rating: 1}, (err, reviews) => {
+                console.log(reviews)
+                info = JSON.parse(result)
+                info[0].reviews = reviews
+                console.log(info)
+                resolve()
+            }).catch(err => console.log(err))
         });
     });
 
     promise.then(
         function result() {
-            console.log("info: " + info)
             if (!info) {
                 res.status(401)
                     .json({
@@ -52,7 +59,7 @@ gameInfo = (req, res) => {
                     });
             } else {
                 res.status(200)
-                    .json(JSON.parse(info))
+                    .json(info)
             }
         }
     )}, 1000)

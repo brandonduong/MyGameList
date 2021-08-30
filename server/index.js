@@ -6,6 +6,7 @@ const db = require('./db')
 const userRouter = require('./routes/user-router')
 const videogamelistRouter = require('./routes/video-game-list-router')
 const gameRouter = require('./routes/game-router')
+const gameRankingRouter = require('./routes/gameranking-router')
 const cookieParser = require('cookie-parser')
 const path = require("path");
 
@@ -27,5 +28,6 @@ app.get('/', (req, res) => {
 app.use('/api', userRouter)
 app.use('/api', videogamelistRouter)
 app.use('/api', gameRouter)
+app.use('/api', gameRankingRouter)
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`))

@@ -26,7 +26,7 @@ export default class Home extends Component {
 
     render() {
         return (
-            <Container fluid={"sm"} style={{paddingTop: 100, paddingLeft: 20, paddingRight: 20}}>
+            <Container fluid style={{paddingTop: 100, paddingLeft: 20, paddingRight: 20}}>
                 <h1 style={{fontSize: 50}}><strong>Rate and record with MyGameList!</strong></h1>
                  <hr style={{height:2}}/>
                 {/*<p>{this.state.message}</p>*/}
