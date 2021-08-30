@@ -1,11 +1,12 @@
 import { Card, Container } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router';
 
 function SearchResults() {
   const t = window.location.href.split('q=');
   const query = t[t.length - 1].replaceAll('%20', ' ');
+  const history = useHistory();
 
   const [response, setResponse] = useState([]);
   const [pageSize, setPageSize] = useState(25);
@@ -30,29 +31,38 @@ function SearchResults() {
       })
       .then((data) => {
         // Convert unix time to date
-        data.forEach((item, index) => {
+        data.forEach((item) => {
           // Make date readable
           item.first_release_date = ((new Date(item.first_release_date * 1000)).toDateString())
             .split('').splice(4)
             .join('');
-
-          // Add link to name property to help display in DataGrid
-          // item.title = item.name
-          item.name = { name: item.name, id: item.id };
-
           if (item.first_release_date === 'lid Date') {
             item.first_release_date = 'No record';
           }
         });
-
         setResponse(data);
-        setSearchFound(true);
       })
       .catch((err) => {
         console.error(err);
         // Bring up 404 page not found
       });
   }, [query]);
+
+  useEffect(() => {
+    if (response.length > 0) {
+      console.log('good:', response);
+      setSearchFound(true);
+    }
+  }, [response]);
+
+  async function getGameId(title, callback) {
+    console.log('response:', response);
+    const ids = {};
+    response.forEach((res) => {
+      ids[`${res.name}`] = res.id;
+    });
+    callback(ids[title]);
+  }
 
   const columns = [
     // {field: 'title', headerName: 'test', flex: 1},
@@ -62,10 +72,13 @@ function SearchResults() {
       width: 625,
       flex: 1,
       renderCell: (params) => (
-        <strong style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          <Link to={`/game/${params.value.id}`}>
-            {params.value.name}
-          </Link>
+        <strong
+          style={{
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer',
+          }}
+          onClick={() => getGameId(params.value, (gameId) => { history.push(`/game/${gameId}`); })}
+        >
+          {params.value}
         </strong>
       ),
     },
@@ -86,22 +99,22 @@ function SearchResults() {
 
         <Card.Body>
           {
-                    searchFound
-                      ? (
-                        <div style={{ height: 735, width: '100%' }}>
-                          <DataGrid
-                            rows={response}
-                            columns={columns}
-                            columnBuffer={50}
-                            rowHeight={50}
-                            pageSize={pageSize}
-                            disableSelectionOnClick
-                          />
-                        </div>
-                      )
+            searchFound
+              ? (
+                <div style={{ height: 735, width: '100%' }}>
+                  <DataGrid
+                    rows={response}
+                    columns={columns}
+                    columnBuffer={50}
+                    rowHeight={50}
+                    pageSize={pageSize}
+                    disableSelectionOnClick
+                  />
+                </div>
+              )
 
-                      : <span>Loading...</span>
-                }
+              : <span>Loading...</span>
+          }
 
         </Card.Body>
       </Card>

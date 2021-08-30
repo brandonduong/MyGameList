@@ -30,39 +30,41 @@ gameInfo = (req, res) => {
     const { gameId } = req.body
     let AT = ""
     let info = ""
+
+    // Get twitch access token
     getAT(function (err, result) {
         console.log("AT:" + result)
         AT = result
-    })
 
-    setTimeout(() => {
-    let promise = new Promise(function (resolve, reject) {
-        gameRequest(AT, gameId, function (err, result) {
+        // Use access token
+        let promise = new Promise(function (resolve, reject) {
+            gameRequest(AT, gameId, function (err, result) {
 
-            // Get all reviews of gameId to calculate score + members + ranking
-            Review.find({gameId: gameId}, {rating: 1}, (err, reviews) => {
-                console.log(reviews)
-                info = JSON.parse(result)
-                info[0].reviews = reviews
-                console.log(info)
-                resolve()
-            }).catch(err => console.log(err))
+                // Get all reviews of gameId to calculate score + members + ranking
+                Review.find({gameId: gameId}, {rating: 1}, (err, reviews) => {
+                    console.log(reviews)
+                    info = JSON.parse(result)
+                    info[0].reviews = reviews
+                    console.log(info)
+                    resolve()
+                }).catch(err => console.log(err))
+            });
         });
-    });
 
-    promise.then(
-        function result() {
-            if (!info) {
-                res.status(401)
-                    .json({
-                        error: `No info returned`
-                    });
-            } else {
-                res.status(200)
-                    .json(info)
+        promise.then(
+            function result() {
+                if (!info) {
+                    res.status(401)
+                        .json({
+                            error: `No info returned`
+                        });
+                } else {
+                    res.status(200)
+                        .json(info)
+                }
             }
-        }
-    )}, 1000)
+        )
+    })
 }
 
 function gameRequest(accessToken, gameId, callback){
@@ -125,12 +127,13 @@ searchInfo = (req, res) => {
     const { query } = req.body
     let AT = ""
     let info = ""
+
+    // Get twitch access token
     getAT(function (err, result) {
         console.log("AT:" + result)
         AT = result
-    })
 
-    setTimeout(() => {
+        // Use access token
         let promise = new Promise(function (resolve, reject) {
             gameSearch(AT, query, function (err, result) {
                 info = result
@@ -150,11 +153,12 @@ searchInfo = (req, res) => {
                         .json(JSON.parse(info))
                 }
             }
-        )}, 1000)
+        )
+    })
 }
 
 
 module.exports = {
     gameInfo,
-    searchInfo
+    searchInfo,
 }

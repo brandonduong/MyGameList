@@ -20,29 +20,29 @@ export default class App extends Component {
           <Router>
             <NavBar />
             <Container fluid>
+              {/*
               <Row>
                 <Col>
-                  {/*
-                                <GoogleAds slot={'6180999739'} />
-                                */}
+                    <GoogleAds slot={'6180999739'} />
                 </Col>
                 <Col xs={12} lg={8}>
-                  <Switch>
-                    <Route path="/" exact component={Home} />
-                    <Route path="/profile/:profileUser" exact component={Profile} />
-                    <Route path="/profile/:profileUser/:listName" exact component={GameList} />
-                    <Route path="/login" exact component={Login} />
-                    <Route path="/signup" exact component={SignUp} />
-                    <Route path="/game/:gameId" exact component={GameInfo} />
-                    <Route path="/search" exact component={SearchResults} />
-                  </Switch>
+                */}
+              <Switch>
+                <Route path="/" exact component={Home} />
+                <Route path="/profile/:profileUser" exact component={Profile} />
+                <Route path="/profile/:profileUser/:listName" exact component={GameList} />
+                <Route path="/login" exact component={Login} />
+                <Route path="/signup" exact component={SignUp} />
+                <Route path="/game/:gameId" exact component={GameInfo} />
+                <Route path="/search" exact component={SearchResults} />
+              </Switch>
+              {/*
                 </Col>
                 <Col>
-                  {/*
-                                <GoogleAds slot={'6180999739'} />
-                                */}
+                    <GoogleAds slot={'6180999739'} />
                 </Col>
               </Row>
+              */}
             </Container>
             {/* <GoogleAds slot={'6180999739'} /> */}
           </Router>

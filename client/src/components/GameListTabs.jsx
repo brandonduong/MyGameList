@@ -53,7 +53,9 @@ function GameListTabs(props) {
               placeholder="Enter list name"
               value={newListName}
               className="me-lg-5"
-              onChange={(e) => setNewListName(e.target.value.trim())}
+              onChange={(e) => {
+                if (e.target.value.length <= 20) { setNewListName(e.target.value.trim()); }
+              }}
               required
             />
           </Col>

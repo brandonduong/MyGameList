@@ -136,12 +136,12 @@ updateReview = async (req, res) => {
     })
 }
 
-getList = async (req, res) => {
-    await Review.find({username: req.params.user, list: req.params.list}, (err, reviews) => {
+getList = (req, res) => {
+    Review.find({username: req.params.user, list: req.params.list}, (err, reviews) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
-        return res.status(200).json({ success: true, data: reviews })
+        return res.status(200).json(reviews)
     }).catch(err => console.log(err))
 }
 
@@ -169,6 +169,11 @@ addList = async (req, res) => {
             success: false,
             error: 'Trying to create list for an account you do not own.',
         })
+    }
+
+    // Max list name of 20 chars
+    if (body.name.length > 20) {
+        body.name = body.name.substring(0, 20);
     }
 
     await VideoGameList.findOne({name: body.name, username: req.username}, (err, list) => {

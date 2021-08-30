@@ -167,7 +167,15 @@ function GameInfo() {
               name="hours"
               placeholder="Hours"
               value={hoursForAdding}
-              onChange={(e) => { if (e.target.value > -1) setHoursForAdding(e.target.value); }}
+              onChange={(e) => {
+                if (e.target.value > -1) {
+                  if (e.target.value > 9999) {
+                    setHoursForAdding(9999);
+                  } else {
+                    setHoursForAdding(e.target.value);
+                  }
+                }
+              }}
               required
             />
           </Col>
@@ -276,7 +284,7 @@ function GameInfo() {
   );
 
   return (
-    <Container lg="auto" style={{ paddingTop: 25 }}>
+    <Container md="auto" style={{ paddingTop: 25 }}>
       {gameFound
         ? (
           <span>

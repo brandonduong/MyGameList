@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Col, Container } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import GoogleAds from '../components/GoogleAds';
 
 const Wrapper = styled.div.attrs({
@@ -26,25 +26,31 @@ export default class Home extends Component {
 
   render() {
     return (
-      <Container fluid style={{ paddingTop: 100, paddingLeft: 20, paddingRight: 20 }}>
-        <h1 style={{ fontSize: 50 }}><strong>Rate and record with MyGameList!</strong></h1>
-        <hr style={{ height: 2 }} />
-        {/* <p>{this.state.message}</p> */}
-        <br />
-        <h5 style={{
-          fontSize: 30, paddingRight: '40%', overflow: 'visible', fontFamily: 'Monaco',
-        }}
-        >
-          Feel a rush of nostalgia as you look back on all the video games you've enjoyed over the years!
-        </h5>
-        <br />
-        <h5 style={{
-          fontSize: 30, paddingRight: '40%', overflow: 'visible', fontFamily: 'Monaco',
-        }}
-        >
-          Start your journey now by searching for a video game you want to remember forever!
-        </h5>
-      </Container>
+      <Row>
+        <Col />
+        <Col xs={12} lg={8}>
+          <Container fluid style={{ paddingTop: 100, paddingLeft: 20, paddingRight: 20 }}>
+            <h1 style={{ fontSize: 50 }}><strong>Rate and record with MyGameList!</strong></h1>
+            <hr style={{ height: 2 }} />
+            {/* <p>{this.state.message}</p> */}
+            <br />
+            <h5 style={{
+              fontSize: 30, paddingRight: '40%', overflow: 'visible', fontFamily: 'Monaco',
+            }}
+            >
+              Feel a rush of nostalgia as you look back on all the video games you've enjoyed over the years!
+            </h5>
+            <br />
+            <h5 style={{
+              fontSize: 30, paddingRight: '40%', overflow: 'visible', fontFamily: 'Monaco',
+            }}
+            >
+              Start your journey now by searching for a video game you want to remember forever!
+            </h5>
+          </Container>
+        </Col>
+        <Col />
+      </Row>
     );
   }
 }

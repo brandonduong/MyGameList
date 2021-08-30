@@ -84,8 +84,8 @@ function SignUp(props) {
   );
 
   return (
-    <Container style={{ paddingTop: 25 }}>
-      <Card style={{ width: '50%', left: '25%', padding: 0 }}>
+    <Container style={{ paddingTop: 75 }}>
+      <Card style={{ width:'50%', left: '25%' }}>
         <Card.Header>
           <h1>Create new account</h1>
         </Card.Header>

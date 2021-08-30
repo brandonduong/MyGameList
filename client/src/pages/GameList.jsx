@@ -2,8 +2,6 @@ import { useHistory, useParams } from 'react-router';
 import { DataGrid } from '@material-ui/data-grid';
 import React, { useEffect, useState } from 'react';
 import { Card, Container, ListGroupItem } from 'react-bootstrap';
-import LinkIcon from '@material-ui/icons/Link';
-import { Link } from '@material-ui/core';
 import { useAuth } from '../context/auth/AuthContext';
 
 function GameList() {
@@ -18,10 +16,16 @@ function GameList() {
   const [currentList, setCurrentList] = useState([]);
   const [currentListFound, setCurrentListFound] = useState(false);
   const [columns, setColumns] = useState([]);
-  const [gameIds, setGameIds] = useState([]);
 
   useEffect(() => {
+    if (profileUser === user) {
+      setColumns(ownerColumns);
+    } else {
+      setColumns(strangerColumns);
+    }
+
     console.log(listName);
+    setCurrentList([]);
     fetch(`/api/getList/${profileUser}.${listName}`, {
       method: 'GET',
       headers: {
@@ -37,27 +41,24 @@ function GameList() {
       })
       .then((data) => {
         console.log(data);
-        const ids = {};
-        data.data.forEach((item, index) => {
+        data.forEach((item) => {
           // For material ui data grid
           item.id = item._id;
-          ids[`${item.title}`] = item.gameId;
         });
-        setGameIds(ids);
-
-        setCurrentList([...data.data]);
-        setCurrentListFound(true);
+        setCurrentList(data);
       })
       .catch((err) => {
         console.error(err);
         // Bring up 404 page not found
       });
-    if (profileUser === user) {
-      setColumns(ownerColumns);
-    } else {
-      setColumns(strangerColumns);
-    }
   }, [listName]);
+
+  useEffect(() => {
+    if (currentList.length > 0) {
+      console.log('good:', currentList);
+      setCurrentListFound(true);
+    }
+  }, [currentList]);
 
   const handleEditCellChangeCommitted = React.useCallback(
     ({ id, field, props }) => {
@@ -83,9 +84,12 @@ function GameList() {
         });
         setCurrentList(updatedRows);
       } else if (field === 'hours') {
-        const hours = data.value;
+        let hours = data.value;
         const updatedRows = currentList.map((row) => {
           if (row.id === id && hours >= 0) {
+            if (hours > 9999) {
+              hours = 9999;
+            }
             updateReview(id, JSON.stringify({ hours }));
             return { ...row, hours };
           }
@@ -121,6 +125,9 @@ function GameList() {
   }
 
   async function getGameId(title, callback) {
+    // Why does this return default state while in search results it doesn't ?!?!
+    console.log('response: ', currentList);
+
     await fetch(`/api/getList/${profileUser}.${listName}`, {
       method: 'GET',
       headers: {
@@ -137,7 +144,7 @@ function GameList() {
       .then((data) => {
         console.log(data);
         const ids = {};
-        data.data.forEach((item, index) => {
+        data.forEach((item) => {
           ids[`${item.title}`] = item.gameId;
         });
 
@@ -153,6 +160,14 @@ function GameList() {
         console.error(err);
         // Bring up 404 page not found
       });
+    { /*
+    console.log('response: ', currentList);
+    const ids = {};
+    currentList.forEach((res) => {
+      ids[`${res.title}`] = res.gameId;
+    });
+    callback(ids[title]);
+    */ }
   }
 
   const ownerColumns = [
@@ -189,7 +204,12 @@ function GameList() {
       headerName: 'Title',
       width: 350,
       renderCell: (params) => (
-        <strong style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <strong
+          style={{
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer',
+          }}
+          onClick={() => getGameId(params.value, (gameId) => { history.push(`/game/${gameId}`); })}
+        >
           {params.value}
         </strong>
       ),
@@ -238,7 +258,6 @@ function GameList() {
                       rowHeight={50}
                       pageSize={25}
                       autoHeight
-                      getRowId={(row) => row.id}
                       onEditCellChangeCommitted={handleEditCellChangeCommitted}
                       disableSelectionOnClick
                     />

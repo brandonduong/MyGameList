@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
-  Container, Tab, Tabs,
+  Col,
+  Container, Row, Tab, Tabs,
 } from 'react-bootstrap';
 import { GameListTabs } from '../components/index';
 import UserProfileInfo from '../components/UserProfileInfo';
