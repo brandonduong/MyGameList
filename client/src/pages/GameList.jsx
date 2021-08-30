@@ -1,11 +1,12 @@
 import { useHistory, useParams } from 'react-router';
 import { DataGrid } from '@material-ui/data-grid';
 import React, { useEffect, useState } from 'react';
-import { Link } from '@material-ui/core';
 import { Card, Container, ListGroupItem } from 'react-bootstrap';
+import LinkIcon from '@material-ui/icons/Link';
+import { Link } from '@material-ui/core';
 import { useAuth } from '../context/auth/AuthContext';
 
-function GameList(props) {
+function GameList() {
   const { profileUser, listName } = useParams();
   const history = useHistory();
 
@@ -17,6 +18,7 @@ function GameList(props) {
   const [currentList, setCurrentList] = useState([]);
   const [currentListFound, setCurrentListFound] = useState(false);
   const [columns, setColumns] = useState([]);
+  const [gameIds, setGameIds] = useState([]);
 
   useEffect(() => {
     console.log(listName);
@@ -35,10 +37,13 @@ function GameList(props) {
       })
       .then((data) => {
         console.log(data);
+        const ids = {};
         data.data.forEach((item, index) => {
           // For material ui data grid
           item.id = item._id;
+          ids[`${item.title}`] = item.gameId;
         });
+        setGameIds(ids);
 
         setCurrentList([...data.data]);
         setCurrentListFound(true);
@@ -115,29 +120,66 @@ function GameList(props) {
       });
   }
 
+  async function getGameId(title, callback) {
+    await fetch(`/api/getList/${profileUser}.${listName}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        const error = new Error(res.error);
+        throw error;
+      })
+      .then((data) => {
+        console.log(data);
+        const ids = {};
+        data.data.forEach((item, index) => {
+          ids[`${item.title}`] = item.gameId;
+        });
+
+        let goodId = 1;
+
+        console.log(ids);
+
+        goodId = ids[title];
+
+        callback(goodId);
+      })
+      .catch((err) => {
+        console.error(err);
+        // Bring up 404 page not found
+      });
+  }
+
   const ownerColumns = [
     // {field: 'gameId', headerName: 'test', flex: 1},
     {
       field: 'title',
       headerName: 'Title',
-      width: 625,
-      flex: 1,
+      width: 350,
       renderCell: (params) => (
-        <strong style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          <Link to={`/game/${params.value}`}>
-            {params.value}
-          </Link>
+        <strong
+          style={{
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer',
+          }}
+          onClick={() => getGameId(params.value, (gameId) => { history.push(`/game/${gameId}`); })}
+        >
+          {params.value}
         </strong>
       ),
     },
     {
-      field: 'rating', headerName: 'Rating', width: 450, flex: 0.25, editable: true,
+      field: 'rating', headerName: 'Rating', width: 120, editable: true,
     },
     {
-      field: 'hours', headerName: 'Hours', width: 450, flex: 0.25, editable: true,
+      field: 'hours', headerName: 'Hours', width: 115, editable: true,
     },
     {
-      field: 'thoughts', headerName: 'Thoughts', width: 450, flex: 1, editable: true,
+      field: 'thoughts', headerName: 'Thoughts', width: 450, editable: true,
     },
   ];
 
@@ -145,31 +187,28 @@ function GameList(props) {
     {
       field: 'title',
       headerName: 'Title',
-      width: 625,
-      flex: 1,
+      width: 350,
       renderCell: (params) => (
         <strong style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          <Link to={`/game/${params.value}`}>
-            {params.value}
-          </Link>
+          {params.value}
         </strong>
       ),
     },
     {
-      field: 'rating', headerName: 'Rating', width: 450, flex: 0.25,
+      field: 'rating', headerName: 'Rating', width: 120,
     },
     {
-      field: 'hours', headerName: 'Hours', width: 450, flex: 0.25,
+      field: 'hours', headerName: 'Hours', width: 115,
     },
     {
-      field: 'thoughts', headerName: 'Thoughts', width: 450, flex: 1,
+      field: 'thoughts', headerName: 'Thoughts', width: 450,
     },
   ];
 
   return (
-    <Container fluid="sm" style={{ paddingTop: 25 }}>
+    <Container style={{ paddingTop: 25 }}>
 
-      <Card style={{ width: '100%', padding: 0 }}>
+      <Card>
         <Card.Header>
           <ListGroupItem
             style={{ marginTop: 10, marginBottom: 10 }}
@@ -181,33 +220,34 @@ function GameList(props) {
               Back to
               {' '}
               {profileUser}
-              's Lists
+              {'\'s Lists'}
             </strong>
           </ListGroupItem>
         </Card.Header>
 
-        <Card.Body style={{ flexGrow: 1 }}>
+        <Card.Body>
           <h1>{listName}</h1>
           <hr />
           {
-                        currentListFound
-                          ? (
-                            <div style={{ paddingTop: 25 }}>
-                              <div>
-                                <DataGrid
-                                  columns={columns}
-                                  rows={currentList}
-                                  rowHeight={50}
-                                  pageSize={25}
-                                  autoHeight
-                                  getRowId={(row) => row.id}
-                                  onEditCellChangeCommitted={handleEditCellChangeCommitted}
-                                />
-                              </div>
-                            </div>
-                          )
-                          : <span>Current list not found.</span>
-                    }
+            currentListFound
+              ? (
+                <div style={{ paddingTop: 25 }}>
+                  <div>
+                    <DataGrid
+                      columns={columns}
+                      rows={currentList}
+                      rowHeight={50}
+                      pageSize={25}
+                      autoHeight
+                      getRowId={(row) => row.id}
+                      onEditCellChangeCommitted={handleEditCellChangeCommitted}
+                      disableSelectionOnClick
+                    />
+                  </div>
+                </div>
+              )
+              : <span>Loading...</span>
+          }
           <small>Double click any cell to edit!</small>
         </Card.Body>
       </Card>

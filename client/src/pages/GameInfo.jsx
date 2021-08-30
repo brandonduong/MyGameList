@@ -244,7 +244,13 @@ function GameInfo() {
               </b>
             </div>
             <div>
-              <h3><strong>{cumulativeHours / members < 999999 ? Math.round(((cumulativeHours / members) + Number.EPSILON) * 100) / 100 : '>999999'}</strong></h3>
+              <h3>
+                <strong>
+                  {/* eslint-disable-next-line no-nested-ternary */}
+                  {members === 0 ? 0
+                    : (members !== 0 && cumulativeHours / members < 999999 ? Math.round(((cumulativeHours / members) + Number.EPSILON) * 100) / 100 : '>999999')}
+                </strong>
+              </h3>
             </div>
           </div>
         </Col>
