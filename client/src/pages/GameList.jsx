@@ -219,8 +219,7 @@ function GameList() {
             <strong>
               Back to
               {' '}
-              {profileUser}
-              {'\'s Lists'}
+              {profileUser === user ? 'your lists' : `${profileUser}'s lists`}
             </strong>
           </ListGroupItem>
         </Card.Header>
@@ -248,7 +247,7 @@ function GameList() {
               )
               : <span>Loading...</span>
           }
-          <small>Double click any cell to edit!</small>
+          {profileUser === user && <small>Double click any cell to edit!</small>}
         </Card.Body>
       </Card>
     </Container>

@@ -267,7 +267,7 @@ function GameInfo() {
               </b>
             </div>
             <div>
-              <h3><strong>{cumulativeHours < 999999 ? cumulativeHours : '>999999'}</strong></h3>
+              <h3><strong>{cumulativeHours < 999999 ? Math.round(((cumulativeHours) + Number.EPSILON) * 100) / 100 : '>999999'}</strong></h3>
             </div>
           </div>
         </Col>
