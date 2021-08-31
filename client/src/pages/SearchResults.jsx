@@ -93,6 +93,7 @@ function SearchResults() {
         <Card.Header>
           <h1>
             Search results for:
+            {' '}
             {query}
           </h1>
         </Card.Header>

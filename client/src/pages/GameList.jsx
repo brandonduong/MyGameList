@@ -1,8 +1,11 @@
 import { useHistory, useParams } from 'react-router';
 import { DataGrid } from '@material-ui/data-grid';
 import React, { useEffect, useState } from 'react';
-import { Card, Container, ListGroupItem } from 'react-bootstrap';
+import {
+  Card, Container, Dropdown, ListGroupItem,
+} from 'react-bootstrap';
 import { useAuth } from '../context/auth/AuthContext';
+import { GAME_STATUS } from '../constants/gameStatus';
 
 function GameList() {
   const { profileUser, listName } = useParams();
@@ -16,6 +19,7 @@ function GameList() {
   const [currentList, setCurrentList] = useState([]);
   const [currentListFound, setCurrentListFound] = useState(false);
   const [columns, setColumns] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     if (profileUser === user) {
@@ -51,13 +55,11 @@ function GameList() {
         console.error(err);
         // Bring up 404 page not found
       });
-  }, [listName]);
+  }, [listName, refresh]);
 
   useEffect(() => {
-    if (currentList.length > 0) {
-      console.log('good:', currentList);
-      setCurrentListFound(true);
-    }
+    console.log('good:', currentList);
+    setCurrentListFound(true);
   }, [currentList]);
 
   const handleEditCellChangeCommitted = React.useCallback(
@@ -124,52 +126,6 @@ function GameList() {
       });
   }
 
-  async function getGameId(title, callback) {
-    // Why does this return default state while in search results it doesn't ?!?!
-    console.log('response: ', currentList);
-
-    await fetch(`/api/getList/${profileUser}.${listName}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        }
-        const error = new Error(res.error);
-        throw error;
-      })
-      .then((data) => {
-        console.log(data);
-        const ids = {};
-        data.forEach((item) => {
-          ids[`${item.title}`] = item.gameId;
-        });
-
-        let goodId = 1;
-
-        console.log(ids);
-
-        goodId = ids[title];
-
-        callback(goodId);
-      })
-      .catch((err) => {
-        console.error(err);
-        // Bring up 404 page not found
-      });
-    { /*
-    console.log('response: ', currentList);
-    const ids = {};
-    currentList.forEach((res) => {
-      ids[`${res.title}`] = res.gameId;
-    });
-    callback(ids[title]);
-    */ }
-  }
-
   const ownerColumns = [
     // {field: 'gameId', headerName: 'test', flex: 1},
     {
@@ -181,7 +137,7 @@ function GameList() {
           style={{
             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer',
           }}
-          onClick={() => getGameId(params.value, (gameId) => { history.push(`/game/${gameId}`); })}
+          onClick={() => { history.push(`/game/${params.row.gameId}`); }}
         >
           {params.value}
         </strong>
@@ -192,6 +148,33 @@ function GameList() {
     },
     {
       field: 'hours', headerName: 'Hours', width: 115, editable: true,
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 150,
+      renderCell: (params) => (
+        <Dropdown
+          drop="right"
+          onSelect={((eventKey) => {
+            console.log(params);
+            updateReview(params.id, JSON.stringify({ status: eventKey }));
+
+            // Refresh page to update new status
+            setRefresh(!refresh);
+          })}
+        >
+          <Dropdown.Toggle variant="success" id="dropdown-basic" className="dropdown-game-status">
+            {params.value}
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu className="dropdown-menu-scroll">
+            {Object.values(GAME_STATUS).map((status, key) => (
+              <Dropdown.Item eventKey={status} key={`status-${key}`}>{status}</Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      ),
     },
     {
       field: 'thoughts', headerName: 'Thoughts', width: 450, editable: true,
@@ -208,7 +191,7 @@ function GameList() {
           style={{
             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer',
           }}
-          onClick={() => getGameId(params.value, (gameId) => { history.push(`/game/${gameId}`); })}
+          onClick={() => { history.push(`/game/${params.row.gameId}`); }}
         >
           {params.value}
         </strong>
@@ -221,12 +204,15 @@ function GameList() {
       field: 'hours', headerName: 'Hours', width: 115,
     },
     {
+      field: 'status', headerName: 'Status', width: 150,
+    },
+    {
       field: 'thoughts', headerName: 'Thoughts', width: 450,
     },
   ];
 
   return (
-    <Container style={{ paddingTop: 25 }}>
+    <Container style={{ paddingTop: 25, paddingBottom: 25 }}>
 
       <Card>
         <Card.Header>

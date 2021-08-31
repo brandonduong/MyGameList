@@ -6,6 +6,7 @@ import { useParams } from 'react-router';
 import { Card } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import { useAuth } from '../context/auth/AuthContext';
+import { GAME_STATUS } from '../constants/gameStatus';
 
 function GameInfo() {
   const { gameId } = useParams();
@@ -23,6 +24,7 @@ function GameInfo() {
   const [rating, setRating] = useState(0);
   const [members, setMembers] = useState(0);
   const [cumulativeHours, setCumulativeHours] = useState(0);
+  const [reviewStatus, setReviewStatus] = useState(0);
   // const [alreadyReviewed, setAlreadyReviewed] = useState(false)
 
   const {
@@ -116,6 +118,7 @@ function GameInfo() {
         title: info.title,
         username: user,
         hours: hoursForAdding,
+        status: reviewStatus,
       }),
       headers: {
         'Content-Type': 'application/json',
@@ -178,6 +181,24 @@ function GameInfo() {
               }}
               required
             />
+          </Col>
+
+          <Col xs="auto" md="auto">
+            <Form.Control
+              as="select"
+              value={reviewStatus}
+              onChange={(e) => setReviewStatus(e.target.value)}
+              required
+            >
+              <option value="">Play Status...</option>
+              <option key="game-status-1}">{GAME_STATUS.PLAYING}</option>
+              <option key="game-status-2}">{GAME_STATUS.FINISHED}</option>
+              <option key="game-status-3}">{GAME_STATUS.COMPLETE}</option>
+              <option key="game-status-4}">{GAME_STATUS.ON_HOLD}</option>
+              <option key="game-status-5}">{GAME_STATUS.DROPPED}</option>
+              <option key="game-status-6}">{GAME_STATUS.PLANNING}</option>
+              <option key="game-status-7}">{GAME_STATUS.PLANNING_COPIUM}</option>
+            </Form.Control>
           </Col>
 
           <Col xs="auto" md>

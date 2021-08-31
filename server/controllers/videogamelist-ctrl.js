@@ -115,6 +115,8 @@ updateReview = async (req, res) => {
         } else if (body.hours) {
             updateRating = true;
             review.hours = body.hours
+        } else if (body.status) {
+            review.status = body.status
         }
         review
             .save()
