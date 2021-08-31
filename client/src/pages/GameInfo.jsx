@@ -126,6 +126,12 @@ function GameInfo() {
     })
       .then((res) => {
         if (res.status === 200) {
+          // Update ranking live on client side
+          setRating(((rating * members) + starForAdding) / (members + 1));
+          setMembers(members + 1);
+          setCumulativeHours(parseInt(cumulativeHours, 10) + parseInt(hoursForAdding, 10));
+
+          // Reset add to list parameters
           setListToAddTo('');
           setHoursForAdding('');
           setStarForAdding(0);
@@ -296,7 +302,12 @@ function GameInfo() {
               </b>
             </div>
             <div>
-              <h3><strong>{cumulativeHours < 999999 ? Math.round(((cumulativeHours) + Number.EPSILON) * 100) / 100 : '>999999'}</strong></h3>
+              <h3>
+                <strong>
+                  {members === 0 ? 0
+                    : (members !== 0 && cumulativeHours < 999999 ? Math.round(((cumulativeHours / 1) + Number.EPSILON) * 100) / 100 : '>999999')}
+                </strong>
+              </h3>
             </div>
           </div>
         </Col>
