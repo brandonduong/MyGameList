@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Container,
+  Button,
+  Col,
+  Container, Row,
 } from 'react-bootstrap';
 import { useParams } from 'react-router';
+import ShareIcon from '@material-ui/icons/Share';
 
 function UserProfileInfo() {
   const { profileUser } = useParams();
@@ -43,12 +46,37 @@ function UserProfileInfo() {
       {profileFound
         ? (
           <span>
-            <h1>{profileUser}</h1>
-            <h5>
-              Member since
-              {' '}
-              <em>{joinDate}</em>
-            </h5>
+            <Row>
+              <Col>
+                <h1>{profileUser}</h1>
+                <h5>
+                  Member since
+                  {' '}
+                  <em>{joinDate}</em>
+                </h5>
+              </Col>
+              <Col style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                paddingLeft: 5,
+              }}>
+                <Button
+                  className="submit-button"
+                  onClick={() => {
+                    const el = document.createElement('textarea');
+                    el.value = `${window.location.href}`;
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(el);
+                    alert('Profile URL saved to clipboard!');
+                  }}
+                >
+                  <ShareIcon fontSize={"large"}/>
+                </Button>
+              </Col>
+            </Row>
             <hr />
           </span>
         )

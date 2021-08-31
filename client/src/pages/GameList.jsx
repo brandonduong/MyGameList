@@ -152,7 +152,7 @@ function GameList() {
     {
       field: 'status',
       headerName: 'Status',
-      width: 150,
+      width: 180,
       renderCell: (params) => (
         <Dropdown
           drop="right"
@@ -204,7 +204,7 @@ function GameList() {
       field: 'hours', headerName: 'Hours', width: 115,
     },
     {
-      field: 'status', headerName: 'Status', width: 150,
+      field: 'status', headerName: 'Status', width: 130,
     },
     {
       field: 'thoughts', headerName: 'Thoughts', width: 450,
