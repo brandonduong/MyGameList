@@ -176,6 +176,7 @@ function GameInfo() {
               name="hours"
               placeholder="Hours"
               value={hoursForAdding}
+              className={"review-field"}
               onChange={(e) => {
                 if (e.target.value > -1) {
                   if (e.target.value > 9999) {
@@ -195,6 +196,7 @@ function GameInfo() {
               value={reviewStatus}
               onChange={(e) => setReviewStatus(e.target.value)}
               required
+              className={"review-field"}
             >
               <option value="">Play Status...</option>
               <option key="game-status-1}">{GAME_STATUS.PLAYING}</option>
@@ -213,8 +215,9 @@ function GameInfo() {
               value={listToAddTo}
               onChange={(e) => setListToAddTo(e.target.value)}
               required
+              className={"review-field"}
             >
-              <option value="">Choose list...</option>
+              <option value="">List...</option>
               {lists.map((list, key) => (
                 <option key={`list-${key}`}>{list.name}</option>
               ))}
@@ -321,11 +324,13 @@ function GameInfo() {
         ? (
           <span>
             <h1><strong>{info.title}</strong></h1>
+            {info.first_release_date !== 'lid Date' && (
             <h5>
               First released
               {' '}
               <em>{info.first_release_date}</em>
             </h5>
+            )}
             <hr />
 
             <Row>

@@ -92,9 +92,13 @@ function SearchResults() {
       <Card style={{ width: '100%', padding: 0 }}>
         <Card.Header>
           <h1>
-            Search results for:
+            <strong>
+              Search results for:
+            </strong>
             {' '}
-            {query}
+            <small>
+              {query}
+            </small>
           </h1>
         </Card.Header>
 

@@ -134,7 +134,7 @@ function GameListTabs(props) {
                 <ListGroupItem
                   action
                   onClick={() => linkToList(`${profileUser}/${list.name}`)}
-                  style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                  style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', border: "none" }}
                 >
                   <strong>{list.name}</strong>
                 </ListGroupItem>
