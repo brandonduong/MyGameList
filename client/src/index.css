@@ -57,11 +57,6 @@ code {
   background-color: #416464 !important;
 }
 
-.dropdown-menu-scroll {
-  height: 40px;
-  overflow-y: scroll;
-}
-
 .dropdown-game-status {
   background: 0 !important;
   border: 0 !important;

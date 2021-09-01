@@ -14,7 +14,6 @@ function SearchResults() {
 
   useEffect(() => {
     console.log('fetching');
-    setResponse([]);
     fetch('/api/search', {
       method: 'POST',
       body: JSON.stringify({ query }),
@@ -55,28 +54,18 @@ function SearchResults() {
     }
   }, [response]);
 
-  async function getGameId(title, callback) {
-    console.log('response:', response);
-    const ids = {};
-    response.forEach((res) => {
-      ids[`${res.name}`] = res.id;
-    });
-    callback(ids[title]);
-  }
-
   const columns = [
     // {field: 'title', headerName: 'test', flex: 1},
     {
       field: 'name',
       headerName: 'Title',
       width: 625,
-      flex: 1,
       renderCell: (params) => (
         <strong
           style={{
             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer',
           }}
-          onClick={() => getGameId(params.value, (gameId) => { history.push(`/game/${gameId}`); })}
+          onClick={() => { history.push(`/game/${params.row.id}`); }}
         >
           {params.value}
         </strong>

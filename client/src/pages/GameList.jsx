@@ -17,20 +17,12 @@ function GameList() {
   } = useAuth();
 
   // Deals with displaying existing lists
-  const [currentList, setCurrentList] = useState([]);
+  const [currentList, setCurrentList] = useState(null);
   const [currentListFound, setCurrentListFound] = useState(false);
-  const [columns, setColumns] = useState([]);
-  const [refresh, setRefresh] = useState(false);
+  const [columns, setColumns] = useState(null);
+  const [statusDropdownHeight, setStatusDropdownHeight] = useState(null);
 
   useEffect(() => {
-    if (profileUser === user) {
-      setColumns(ownerColumns);
-    } else {
-      setColumns(strangerColumns);
-    }
-
-    console.log(listName);
-    setCurrentList([]);
     fetch(`/api/getList/${profileUser}.${listName}`, {
       method: 'GET',
       headers: {
@@ -45,7 +37,6 @@ function GameList() {
         throw error;
       })
       .then((data) => {
-        console.log(data);
         data.forEach((item) => {
           // For material ui data grid
           item.id = item._id;
@@ -56,12 +47,37 @@ function GameList() {
         console.error(err);
         // Bring up 404 page not found
       });
-  }, [listName, refresh]);
+  }, [listName]);
 
   useEffect(() => {
-    console.log('good:', currentList);
-    setCurrentListFound(true);
+    if (currentList) {
+      console.log('good:', currentList);
+      if (40 * currentList.length > 417) {
+        setStatusDropdownHeight(417);
+      } else if (currentList.length > 0){
+        setStatusDropdownHeight(40 * currentList.length);
+      } else {
+        setStatusDropdownHeight(40);
+      }
+    }
   }, [currentList]);
+
+  useEffect(() => {
+    if (statusDropdownHeight) {
+      if (profileUser === user) {
+        setColumns(ownerColumns);
+      } else {
+        setColumns(strangerColumns);
+      }
+    }
+  }, [statusDropdownHeight]);
+
+  useEffect(() => {
+    if (columns) {
+      console.log('good');
+      setCurrentListFound(true);
+    }
+  }, [columns]);
 
   const handleEditCellChangeCommitted = React.useCallback(
     ({ id, field, props }) => {
@@ -158,18 +174,24 @@ function GameList() {
         <Dropdown
           drop="right"
           onSelect={((eventKey) => {
-            console.log(params);
+            console.log(params, currentList);
             updateReview(params.id, JSON.stringify({ status: eventKey }));
 
-            // Refresh page to update new status
-            setRefresh(!refresh);
+            // Update row client side
+            const updatedRows = currentList.map((row) => {
+              if (row.id === params.id) {
+                return { ...row, status: eventKey};
+              }
+              return row;
+            });
+            setCurrentList(updatedRows);
           })}
         >
           <Dropdown.Toggle variant="success" id="dropdown-basic" className="dropdown-game-status">
             {params.value}
           </Dropdown.Toggle>
 
-          <Dropdown.Menu className="dropdown-menu-scroll">
+          <Dropdown.Menu style={{ height: statusDropdownHeight, overflowY: 'scroll' }}>
             {Object.values(GAME_STATUS).map((status, key) => (
               <Dropdown.Item eventKey={status} key={`status-${key}`}>{status}</Dropdown.Item>
             ))}
@@ -238,22 +260,21 @@ function GameList() {
             currentListFound
               ? (
                 <div style={{ paddingTop: 25 }}>
-                  <div>
-                    <DataGrid
-                      columns={columns}
-                      rows={currentList}
-                      rowHeight={50}
-                      pageSize={25}
-                      autoHeight
-                      onEditCellChangeCommitted={handleEditCellChangeCommitted}
-                      disableSelectionOnClick
-                    />
-                  </div>
+                  <DataGrid
+                    rows={currentList}
+                    columns={columns}
+                    columnBuffer={50}
+                    rowHeight={50}
+                    pageSize={25}
+                    autoHeight
+                    onEditCellChangeCommitted={handleEditCellChangeCommitted}
+                    disableSelectionOnClick
+                  />
+                  {profileUser === user && <small>Double click any cell to edit!</small>}
                 </div>
               )
               : <span>Loading...</span>
           }
-          {profileUser === user && <small>Double click any cell to edit!</small>}
         </Card.Body>
       </Card>
     </Container>
