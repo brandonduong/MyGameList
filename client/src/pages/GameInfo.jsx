@@ -50,7 +50,7 @@ function GameInfo() {
       .then((data) => {
         setInfo({
           title: data[0].name,
-          cover: data[0].cover.url.replace('t_thumb', 't_cover_big'),
+          cover: (data[0].cover ? data[0].cover.url.replace('t_thumb', 't_cover_big') : null),
           first_release_date: new Date(data[0].first_release_date * 1000).toDateString().split('').splice(4)
             .join(''),
           summary: data[0].summary,
@@ -176,7 +176,7 @@ function GameInfo() {
               name="hours"
               placeholder="Hours"
               value={hoursForAdding}
-              className={"review-field"}
+              className="review-field"
               onChange={(e) => {
                 if (e.target.value > -1) {
                   if (e.target.value > 9999) {
@@ -196,7 +196,7 @@ function GameInfo() {
               value={reviewStatus}
               onChange={(e) => setReviewStatus(e.target.value)}
               required
-              className={"review-field"}
+              className="review-field"
             >
               <option value="">Play Status...</option>
               <option key="game-status-1}">{GAME_STATUS.PLAYING}</option>
@@ -215,7 +215,7 @@ function GameInfo() {
               value={listToAddTo}
               onChange={(e) => setListToAddTo(e.target.value)}
               required
-              className={"review-field"}
+              className="review-field"
             >
               <option value="">List...</option>
               {lists.map((list, key) => (
@@ -334,8 +334,10 @@ function GameInfo() {
             <hr />
 
             <Row>
-              <Col xs="auto">
-                <img src={info.cover} width={264} height={374} alt={info.title} />
+              <Col xs="auto" style={{ alignItems: 'flex-end' }}>
+                {info.cover
+                  ? <img src={info.cover} width={264} height={374} alt={info.title} />
+                  : <h3><strong>No Cover Found</strong></h3>}
               </Col>
               <Col>
                 {rankingInfo}

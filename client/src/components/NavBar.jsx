@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 
 import {
-  Container, Navbar, NavDropdown, Nav, Col, Row, NavbarBrand,
+  Container, Navbar, NavDropdown, Nav, Col, Row, NavbarBrand, ButtonGroup, Dropdown, DropdownButton,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 import Logo from './Logo';
 import Links from './Links';
 import { useAuth } from '../context/auth/AuthContext';
 import { SearchBar } from './index';
+import { GAME_STATUS } from '../constants/gameStatus';
 
 function NavBar() {
   // Get context
@@ -43,25 +44,17 @@ function NavBar() {
           MyGameList
         </NavbarBrand>
         <Links />
-        <Row>
-          <Col>
-            <SearchBar />
-          </Col>
-          <Col xs="auto">
-            <Nav>
-              {
-                user
-                && (
-                <NavDropdown id="basic-nav-dropdown" variant="dark" title={`${user} `}>
-                  <NavDropdown.Item onClick={onLink(`/profile/${user}`)}>Profile</NavDropdown.Item>
-                  <NavDropdown.Item onClick={onLink('/')}>Account Settings</NavDropdown.Item>
-                  <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
-                </NavDropdown>
-                )
-              }
-            </Nav>
-          </Col>
-        </Row>
+        <SearchBar />
+        {
+            user
+            && (
+            <NavDropdown variant="dark" title={`${user} `}>
+              <NavDropdown.Item onClick={onLink(`/profile/${user}`)}>Profile</NavDropdown.Item>
+              <NavDropdown.Item onClick={onLink('/')}>Settings</NavDropdown.Item>
+              <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
+            </NavDropdown>
+            )
+          }
       </Container>
     </Navbar>
   );

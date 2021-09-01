@@ -58,7 +58,7 @@ code {
 }
 
 .dropdown-menu-scroll {
-  height: 100px;
+  height: 40px;
   overflow-y: scroll;
 }
 
@@ -74,6 +74,15 @@ code {
 
 .nav-bar {
   background-color: var(--nav-bar-color) !important;
+}
+
+.account-dropdown {
+  align-items: flex-start !important;
+  justify-content: flex-end !important;
+}
+
+.account-dropdown-option {
+  font-size: 10px !important;
 }
 
 h1, form, strong {

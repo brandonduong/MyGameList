@@ -39,17 +39,11 @@ gameInfo = (req, res) => {
         // Use access token
         let promise = new Promise(function (resolve, reject) {
             gameRequest(AT, gameId, function (err, result) {
-
-                // Get all reviews of gameId to calculate score + members + ranking
-                Review.find({gameId: gameId}, {rating: 1}, (err, reviews) => {
-                    console.log(reviews)
                     info = JSON.parse(result)
-                    info[0].reviews = reviews
                     console.log(info)
                     resolve()
-                }).catch(err => console.log(err))
+                })
             });
-        });
 
         promise.then(
             function result() {
