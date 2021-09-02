@@ -3,10 +3,12 @@ import { DataGrid } from '@material-ui/data-grid';
 import React, { useEffect, useState } from 'react';
 import {
   Button,
-  Card, Container, Dropdown, ListGroupItem,
+  Card, Col, Container, Dropdown, ListGroupItem, Row,
 } from 'react-bootstrap';
+import ShareIcon from '@material-ui/icons/Share';
 import { useAuth } from '../context/auth/AuthContext';
 import { GAME_STATUS } from '../constants/gameStatus';
+import {ShareButton} from "../components";
 
 function GameList() {
   const { profileUser, listName } = useParams();
@@ -54,7 +56,7 @@ function GameList() {
       console.log('good:', currentList);
       if (40 * currentList.length > 417) {
         setStatusDropdownHeight(417);
-      } else if (currentList.length > 0){
+      } else if (currentList.length > 0) {
         setStatusDropdownHeight(40 * currentList.length);
       } else {
         setStatusDropdownHeight(40);
@@ -86,7 +88,7 @@ function GameList() {
         const thoughts = data.value.toString();
         const updatedRows = currentList.map((row) => {
           if (row.id === id) {
-            updateReview(id, JSON.stringify({ thoughts }));
+            updateReview(id, JSON.stringify({ thoughts, updatedAt: new Date() }));
             return { ...row, thoughts };
           }
           return row;
@@ -96,7 +98,7 @@ function GameList() {
         const rating = data.value;
         const updatedRows = currentList.map((row) => {
           if (row.id === id && rating >= 0 && rating <= 10) {
-            updateReview(id, JSON.stringify({ rating }));
+            updateReview(id, JSON.stringify({ rating, updatedAt: new Date() }));
             return { ...row, rating };
           }
           return row;
@@ -109,7 +111,7 @@ function GameList() {
             if (hours > 9999) {
               hours = 9999;
             }
-            updateReview(id, JSON.stringify({ hours }));
+            updateReview(id, JSON.stringify({ hours, updatedAt: new Date() }));
             return { ...row, hours };
           }
           return row;
@@ -180,7 +182,7 @@ function GameList() {
             // Update row client side
             const updatedRows = currentList.map((row) => {
               if (row.id === params.id) {
-                return { ...row, status: eventKey};
+                return { ...row, status: eventKey, updatedAt: new Date() };
               }
               return row;
             });
@@ -201,6 +203,14 @@ function GameList() {
     },
     {
       field: 'thoughts', headerName: 'Thoughts', width: 450, editable: true,
+    },
+    {
+      field: 'updatedAt', headerName: 'Updated At', width: 450,
+      renderCell: (params) => (
+        <span>
+          {(new Date(params.row.updatedAt)).toLocaleDateString()}
+        </span>
+      )
     },
   ];
 
@@ -239,18 +249,31 @@ function GameList() {
 
       <Card>
         <Card.Header>
-          <ListGroupItem
-            style={{ marginTop: 10, marginBottom: 10 }}
-            key="BackToLists"
-            action
-            onClick={() => history.push(`../${profileUser}`)}
-          >
-            <strong>
-              Back to
-              {' '}
-              {profileUser === user ? 'your lists' : `${profileUser}'s lists`}
-            </strong>
-          </ListGroupItem>
+
+          <Row>
+            <Col>
+              <ListGroupItem
+                style={{ marginTop: 10, marginBottom: 10 }}
+                key="BackToLists"
+                action
+                onClick={() => history.push(`../${profileUser}`)}
+              >
+                <strong>
+                  Back to
+                  {' '}
+                  {profileUser === user ? 'your lists' : `${profileUser}'s lists`}
+                </strong>
+              </ListGroupItem>
+            </Col>
+            <Col xs={"auto"} style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+            }}
+            >
+              <ShareButton alertMessage="MyGameList URL saved to clipboard!" />
+            </Col>
+          </Row>
         </Card.Header>
 
         <Card.Body>
@@ -259,14 +282,12 @@ function GameList() {
           {
             currentListFound
               ? (
-                <div style={{ paddingTop: 25 }}>
+                <div style={{ paddingBottom: 15, height: '67vh' }}>
                   <DataGrid
                     rows={currentList}
                     columns={columns}
-                    columnBuffer={50}
                     rowHeight={50}
                     pageSize={25}
-                    autoHeight
                     onEditCellChangeCommitted={handleEditCellChangeCommitted}
                     disableSelectionOnClick
                   />

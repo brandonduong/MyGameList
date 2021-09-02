@@ -1,6 +1,7 @@
 import {
   createContext, useContext, useEffect, useReducer,
 } from 'react';
+import { useHistory } from 'react-router';
 
 const AuthContext = createContext();
 
@@ -34,9 +35,21 @@ const localState = JSON.parse(localStorage.getItem('state'));
 
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, localState || initialState, undefined);
+
   useEffect(() => {
     localStorage.setItem('state', JSON.stringify(state));
-    console.log(JSON.stringify(state));
+    console.log('context:', JSON.stringify(state));
+
+    // Deals with automatic logout after token expires
+    if (state.isAuthenticated) {
+      setTimeout(() => {
+        dispatch({
+          type: 'logout',
+        });
+        localStorage.clear();
+        alert('Your session has ended.');
+      }, 1000 * 60 * 60); // Sign out after 1 hour
+    }
   }, [state]);
 
   const value = { state, dispatch };

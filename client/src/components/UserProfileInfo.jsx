@@ -6,6 +6,7 @@ import {
 } from 'react-bootstrap';
 import { useParams } from 'react-router';
 import ShareIcon from '@material-ui/icons/Share';
+import {ShareButton} from "./index";
 
 function UserProfileInfo() {
   const { profileUser } = useParams();
@@ -58,23 +59,10 @@ function UserProfileInfo() {
               <Col style={{
                 display: 'flex',
                 justifyContent: 'flex-end',
-                alignItems: 'center',
+                alignItems: 'flex-end',
                 paddingLeft: 5,
               }}>
-                <Button
-                  className="submit-button"
-                  onClick={() => {
-                    const el = document.createElement('textarea');
-                    el.value = `${window.location.href}`;
-                    document.body.appendChild(el);
-                    el.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(el);
-                    alert('Profile URL saved to clipboard!');
-                  }}
-                >
-                  <ShareIcon fontSize={"large"}/>
-                </Button>
+                <ShareButton alertMessage="Profile URL saved to clipboard!" />
               </Col>
             </Row>
             <hr />

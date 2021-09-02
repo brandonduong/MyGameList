@@ -95,7 +95,7 @@ function SearchResults() {
           {
             searchFound
               ? (
-                <div style={{ height: 735, width: '100%' }}>
+                <div style={{height: '76vh'}}>
                   <DataGrid
                     rows={response}
                     columns={columns}
