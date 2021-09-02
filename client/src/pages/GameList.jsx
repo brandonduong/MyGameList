@@ -8,7 +8,7 @@ import {
 import ShareIcon from '@material-ui/icons/Share';
 import { useAuth } from '../context/auth/AuthContext';
 import { GAME_STATUS } from '../constants/gameStatus';
-import {ShareButton} from "../components";
+import { ShareButton } from '../components';
 
 function GameList() {
   const { profileUser, listName } = useParams();
@@ -23,37 +23,59 @@ function GameList() {
   const [currentListFound, setCurrentListFound] = useState(false);
   const [columns, setColumns] = useState(null);
   const [statusDropdownHeight, setStatusDropdownHeight] = useState(null);
+  const [newCurrentList, setNewCurrentList] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/getList/${profileUser}.${listName}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        }
-        const error = new Error(res.error);
-        throw error;
+    if (!currentListFound) {
+      fetch(`/api/getList/${profileUser}.${listName}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
-      .then((data) => {
-        data.forEach((item) => {
-          // For material ui data grid
-          item.id = item._id;
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          }
+          const error = new Error(res.error);
+          throw error;
+        })
+        .then((data) => {
+          console.log('refresh')
+          data.forEach((item) => {
+            // For material ui data grid
+            item.id = item._id;
+          });
+          setCurrentList(data);
+        })
+        .catch((err) => {
+          console.error(err);
+          // Bring up 404 page not found
         });
-        setCurrentList(data);
-      })
-      .catch((err) => {
-        console.error(err);
-        // Bring up 404 page not found
-      });
-  }, [listName]);
+    }
+  }, [listName, currentListFound]);
 
   useEffect(() => {
-    if (currentList) {
+    if (newCurrentList) {
+      setCurrentListFound(false)
+    }
+  }, [newCurrentList])
+
+  useEffect(() => {
+    if (currentListFound) {
+      console.log('shouold work2', currentList)
+      setNewCurrentList(false)
+    }
+  }, [currentListFound])
+
+  useEffect(() => {
+    if (currentList && !currentListFound) {
       console.log('good:', currentList);
+      if (statusDropdownHeight) {
+        console.log('shouold work')
+        setCurrentListFound(true)
+      }
+
       if (40 * currentList.length > 417) {
         setStatusDropdownHeight(417);
       } else if (currentList.length > 0) {
@@ -65,7 +87,7 @@ function GameList() {
   }, [currentList]);
 
   useEffect(() => {
-    if (statusDropdownHeight) {
+    if (statusDropdownHeight && !currentListFound) {
       if (profileUser === user) {
         setColumns(ownerColumns);
       } else {
@@ -182,11 +204,13 @@ function GameList() {
             // Update row client side
             const updatedRows = currentList.map((row) => {
               if (row.id === params.id) {
+                console.log(row);
                 return { ...row, status: eventKey, updatedAt: new Date() };
               }
               return row;
             });
-            setCurrentList(updatedRows);
+            console.log('best', updatedRows);
+            setNewCurrentList(true)
           })}
         >
           <Dropdown.Toggle variant="success" id="dropdown-basic" className="dropdown-game-status">
@@ -205,12 +229,14 @@ function GameList() {
       field: 'thoughts', headerName: 'Thoughts', width: 450, editable: true,
     },
     {
-      field: 'updatedAt', headerName: 'Updated At', width: 450,
+      field: 'updatedAt',
+      headerName: 'Updated At',
+      width: 147,
       renderCell: (params) => (
         <span>
           {(new Date(params.row.updatedAt)).toLocaleDateString()}
         </span>
-      )
+      ),
     },
   ];
 
@@ -242,6 +268,16 @@ function GameList() {
     {
       field: 'thoughts', headerName: 'Thoughts', width: 450,
     },
+    {
+      field: 'updatedAt',
+      headerName: 'Updated At',
+      width: 147,
+      renderCell: (params) => (
+        <span>
+          {(new Date(params.row.updatedAt)).toLocaleDateString()}
+        </span>
+      ),
+    },
   ];
 
   return (
@@ -265,11 +301,13 @@ function GameList() {
                 </strong>
               </ListGroupItem>
             </Col>
-            <Col xs={"auto"} style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-            }}
+            <Col
+              xs="auto"
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}
             >
               <ShareButton alertMessage="MyGameList URL saved to clipboard!" />
             </Col>
@@ -280,7 +318,7 @@ function GameList() {
           <h1>{listName}</h1>
           <hr />
           {
-            currentListFound
+            currentListFound || newCurrentList
               ? (
                 <div style={{ paddingBottom: 15, height: '67vh' }}>
                   <DataGrid
