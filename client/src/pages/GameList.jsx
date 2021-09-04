@@ -3,12 +3,13 @@ import { DataGrid } from '@material-ui/data-grid';
 import React, { useEffect, useState } from 'react';
 import {
   Button,
-  Card, Col, Container, Dropdown, ListGroupItem, Row,
+  Card, Col, Container, Dropdown, Form, ListGroupItem, Row,
 } from 'react-bootstrap';
 import ShareIcon from '@material-ui/icons/Share';
+import { Modal } from '@material-ui/core';
 import { useAuth } from '../context/auth/AuthContext';
 import { GAME_STATUS } from '../constants/gameStatus';
-import { ShareButton } from '../components';
+import { PopUpWindow, ShareButton } from '../components';
 
 function GameList() {
   const { profileUser, listName } = useParams();
@@ -24,6 +25,7 @@ function GameList() {
   const [columns, setColumns] = useState(null);
   const [statusDropdownHeight, setStatusDropdownHeight] = useState(null);
   const [newCurrentList, setNewCurrentList] = useState(false);
+  const [fullThoughts, setFullThoughts] = useState({});
 
   useEffect(() => {
     if (!currentListFound) {
@@ -41,7 +43,7 @@ function GameList() {
           throw error;
         })
         .then((data) => {
-          console.log('refresh')
+          console.log('refresh');
           data.forEach((item) => {
             // For material ui data grid
             item.id = item._id;
@@ -56,24 +58,25 @@ function GameList() {
   }, [listName, currentListFound]);
 
   useEffect(() => {
+    // Deals with updating status of a review
     if (newCurrentList) {
-      setCurrentListFound(false)
+      setCurrentListFound(false);
     }
-  }, [newCurrentList])
+  }, [newCurrentList]);
 
   useEffect(() => {
+    // Deals with updating status of a review
     if (currentListFound) {
-      console.log('shouold work2', currentList)
-      setNewCurrentList(false)
+      setNewCurrentList(false);
     }
-  }, [currentListFound])
+  }, [currentListFound]);
 
   useEffect(() => {
     if (currentList && !currentListFound) {
       console.log('good:', currentList);
       if (statusDropdownHeight) {
-        console.log('shouold work')
-        setCurrentListFound(true)
+        // Deals with updating status of a review
+        setCurrentListFound(true);
       }
 
       if (40 * currentList.length > 417) {
@@ -210,7 +213,7 @@ function GameList() {
               return row;
             });
             console.log('best', updatedRows);
-            setNewCurrentList(true)
+            setNewCurrentList(true);
           })}
         >
           <Dropdown.Toggle variant="success" id="dropdown-basic" className="dropdown-game-status">
@@ -226,7 +229,46 @@ function GameList() {
       ),
     },
     {
-      field: 'thoughts', headerName: 'Thoughts', width: 450, editable: true,
+      field: 'thoughts',
+      headerName: 'Thoughts',
+      width: 450,
+      renderCell: (params) => (
+        <>
+          {' '}
+          {params.row.thoughts ? (
+            <strong
+              style={{
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer',
+              }}
+              onClick={() => {
+                console.log('View full thoughts');
+                setFullThoughts({
+                  id: params.row.id,
+                  title: params.row.title,
+                  thoughts: params.value,
+                  editing: true,
+                });
+              }}
+            >
+              {params.value}
+            </strong>
+          )
+            : (
+              <Button
+                onClick={() => setFullThoughts({
+                  id: params.row.id,
+                  title: params.row.title,
+                  thoughts: params.value,
+                  editing: true,
+                })}
+                style={{ width: 450 }}
+                className="submit-button"
+              >
+                Add Thoughts
+              </Button>
+            )}
+        </>
+      ),
     },
     {
       field: 'updatedAt',
@@ -266,7 +308,32 @@ function GameList() {
       field: 'status', headerName: 'Status', width: 130,
     },
     {
-      field: 'thoughts', headerName: 'Thoughts', width: 450,
+      field: 'thoughts',
+      headerName: 'Thoughts',
+      width: 450,
+      renderCell: (params) => (
+        <>
+          {' '}
+          {params.row.thoughts && (
+            <strong
+              style={{
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', cursor: 'pointer',
+              }}
+              onClick={() => {
+                console.log('View full thoughts');
+                setFullThoughts({
+                  id: params.row.id,
+                  title: params.row.title,
+                  thoughts: params.value,
+                  editing: true,
+                });
+              }}
+            >
+              {params.value}
+            </strong>
+          )}
+        </>
+      ),
     },
     {
       field: 'updatedAt',
@@ -279,6 +346,27 @@ function GameList() {
       ),
     },
   ];
+
+  function onEditThoughts(event) {
+    event.preventDefault();
+
+    // Update backend
+    updateReview(fullThoughts.id,
+      JSON.stringify({ thoughts: fullThoughts.thoughts, updatedAt: new Date() }));
+
+    // Close modal
+    setFullThoughts({});
+
+    // Update row client side
+    const updatedRows = currentList.map((row) => {
+      if (row.id === fullThoughts.id) {
+        console.log(row);
+        return { ...row, thoughts: fullThoughts, updatedAt: new Date() };
+      }
+      return row;
+    });
+    setNewCurrentList(true);
+  }
 
   return (
     <Container style={{ paddingTop: 25, paddingBottom: 25 }}>
@@ -336,6 +424,32 @@ function GameList() {
           }
         </Card.Body>
       </Card>
+      <Modal
+        open={JSON.stringify(fullThoughts) !== '{}' && fullThoughts.editing}
+        onClose={() => setFullThoughts({})}
+      >
+        <div className="pop-up">
+          <h2>{fullThoughts.title}</h2>
+          {profileUser === user ? (
+            <Form onSubmit={onEditThoughts}>
+              <Form.Group>
+                <Form.Control
+                  placeholder="Thoughts..."
+                  as="textarea"
+                  rows={3}
+                  value={fullThoughts.thoughts}
+                  onChange={(event) => {
+                    setFullThoughts({ ...fullThoughts, thoughts: event.target.value });
+                  }}
+                />
+              </Form.Group>
+              <Button className="submit-button" type="submit">
+                Save
+              </Button>
+            </Form>
+          ) : (<span>{fullThoughts.thoughts}</span>)}
+        </div>
+      </Modal>
     </Container>
   );
 }

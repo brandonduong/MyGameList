@@ -85,7 +85,7 @@ function Login(props) {
                 */}
         <br />
       </Form.Group>
-      <Button type="submit" className="submit-button" variant="dark">Login</Button>
+      <Button type="submit" className="submit-button">Login</Button>
     </Form>
   );
 
