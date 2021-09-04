@@ -27,6 +27,7 @@ function Links() {
   return (
     <>
       <Collapse>
+        {/*
         <List>
           <Item>
             <Link to="/" className="nav-link">
@@ -34,6 +35,7 @@ function Links() {
             </Link>
           </Item>
         </List>
+        */}
         { isAuthenticated
           // Links if user is logged in
           ? (

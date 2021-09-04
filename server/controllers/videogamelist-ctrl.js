@@ -221,11 +221,28 @@ removeList = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+removeReview = async (req, res) => {
+    await Review.findOneAndDelete({ _id: req.params.id, username: req.username }, (err, review) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!review) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Review not found` })
+        }
+
+        return res.status(200).json({ success: true })
+    }).catch(err => console.log(err))
+}
+
 module.exports = {
     addReview,
     getList,
     getLists,
     addList,
     removeList,
-    updateReview
+    updateReview,
+    removeReview
 }

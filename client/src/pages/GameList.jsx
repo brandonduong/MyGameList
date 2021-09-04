@@ -170,6 +170,28 @@ function GameList() {
       });
   }
 
+  function removeReview(id) {
+    fetch(`/api/removeReview/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          // Update row client side
+          setNewCurrentList(true);
+        } else {
+          const error = new Error(res.error);
+          throw error;
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        // Bring up 404 page not found
+      });
+  }
+
   const ownerColumns = [
     // {field: 'gameId', headerName: 'test', flex: 1},
     {
@@ -205,14 +227,6 @@ function GameList() {
             updateReview(params.id, JSON.stringify({ status: eventKey }));
 
             // Update row client side
-            const updatedRows = currentList.map((row) => {
-              if (row.id === params.id) {
-                console.log(row);
-                return { ...row, status: eventKey, updatedAt: new Date() };
-              }
-              return row;
-            });
-            console.log('best', updatedRows);
             setNewCurrentList(true);
           })}
         >
@@ -231,7 +245,7 @@ function GameList() {
     {
       field: 'thoughts',
       headerName: 'Thoughts',
-      width: 450,
+      width: 255,
       renderCell: (params) => (
         <>
           {' '}
@@ -278,6 +292,16 @@ function GameList() {
         <span>
           {(new Date(params.row.updatedAt)).toLocaleDateString()}
         </span>
+      ),
+    },
+    {
+      field: 'Delete',
+      headerName: ' ',
+      disableColumnMenu: true,
+      sortable: false,
+      width: 90,
+      renderCell: (params) => (
+        <Button onClick={() => { removeReview(params.row.id); }} className="submit-button">Delete</Button>
       ),
     },
   ];
@@ -358,13 +382,6 @@ function GameList() {
     setFullThoughts({});
 
     // Update row client side
-    const updatedRows = currentList.map((row) => {
-      if (row.id === fullThoughts.id) {
-        console.log(row);
-        return { ...row, thoughts: fullThoughts, updatedAt: new Date() };
-      }
-      return row;
-    });
     setNewCurrentList(true);
   }
 

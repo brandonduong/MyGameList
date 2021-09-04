@@ -127,9 +127,15 @@ function GameInfo() {
       .then((res) => {
         if (res.status === 200) {
           // Update ranking live on client side
-          setRating(((rating * members) + starForAdding) / (members + 1));
+          setRating(
+            Math.round(((((rating * members) + starForAdding)
+                / (members + 1)) + Number.EPSILON) * 100) / 100,
+          );
           setMembers(members + 1);
-          setCumulativeHours(parseInt(cumulativeHours, 10) + parseInt(hoursForAdding, 10));
+          setCumulativeHours(
+            Math.round((((parseInt(cumulativeHours, 10) + parseInt(hoursForAdding, 10))
+                + Number.EPSILON) * 100) / 100),
+          );
 
           // Reset add to list parameters
           setListToAddTo('');
