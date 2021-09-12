@@ -49,13 +49,23 @@ function GameInfo() {
         throw error;
       })
       .then((data) => {
+        const reviews = [];
+        const added = [];
+        data[0].reviews.sort(compareReviewHelpfulness).forEach((review) => {
+          if (!added.includes(review.username)) {
+            reviews.push(review);
+            added.push(review.username);
+          }
+        });
+
+
         setInfo({
           title: data[0].name,
           cover: (data[0].cover ? data[0].cover.url.replace('t_thumb', 't_cover_big') : null),
           first_release_date: new Date(data[0].first_release_date * 1000).toDateString().split('').splice(4)
             .join(''),
           summary: data[0].summary,
-          reviews: data[0].reviews.sort(compareReviewHelpfulness),
+          reviews,
         });
         setGameFound(true);
       })
