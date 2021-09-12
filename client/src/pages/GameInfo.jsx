@@ -7,6 +7,7 @@ import { Card } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import { useAuth } from '../context/auth/AuthContext';
 import { GAME_STATUS } from '../constants/gameStatus';
+import { AGE_RATING } from '../constants/ageRatings';
 import { GameReview } from '../components';
 
 function GameInfo() {
@@ -51,6 +52,7 @@ function GameInfo() {
       .then((data) => {
         const reviews = [];
         const added = [];
+        // Only show 1 review per user
         data[0].reviews.sort(compareReviewHelpfulness).forEach((review) => {
           if (!added.includes(review.username)) {
             reviews.push(review);
@@ -58,6 +60,58 @@ function GameInfo() {
           }
         });
 
+        // Parse genres
+        const genres = [];
+        data[0].genres.forEach((genre) => {
+          genres.push(genre.name);
+        });
+
+        // Parse involved companies
+        const developer = [];
+        const publisher = [];
+        const supporting = [];
+        data[0].involved_companies.forEach((company) => {
+          if (company.developer) {
+            developer.push(company.company.name);
+          }
+
+          if (company.publisher) {
+            publisher.push(company.company.name);
+          }
+
+          if (company.supporting) {
+            supporting.push(company.company.name);
+          }
+        });
+
+        // Parse platforms
+        const platforms = [];
+        data[0].platforms.forEach((platform) => {
+          platforms.push(`${platform.name} (${platform.abbreviation})`);
+        });
+
+        // Parse age ratings
+        let ESRB = 'N/A';
+        let PEGI = 'N/A';
+        data[0].age_ratings.forEach((ageRating) => {
+          console.log(ageRating)
+          switch (ageRating.category) {
+            case 1:
+              if (ageRating.rating) {
+                ESRB = AGE_RATING[ageRating.rating];
+              }
+              break;
+
+            case 2:
+              if (ageRating.rating) {
+                PEGI = AGE_RATING[ageRating.rating];
+              }
+              break;
+
+            default:
+              break;
+          }
+        });
 
         setInfo({
           title: data[0].name,
@@ -66,8 +120,14 @@ function GameInfo() {
             .join(''),
           summary: data[0].summary,
           reviews,
+          genres,
+          developer,
+          publisher,
+          supporting,
+          platforms,
+          ESRB,
+          PEGI,
         });
-        setGameFound(true);
       })
       .catch((err) => {
         console.error(err);
@@ -118,6 +178,13 @@ function GameInfo() {
         // Bring up 404 page not found
       });
   }, [gameId]);
+
+  useEffect(() => {
+    if (info.title) {
+      console.log(info);
+      setGameFound(true);
+    }
+  }, [info]);
 
   function onAddToList(event) {
     event.preventDefault();
@@ -366,6 +433,128 @@ function GameInfo() {
     </Card>
   );
 
+  const generalInfo = (
+    <Card style={{
+      paddingLeft: 10, paddingRight: 10, paddingTop: 10, paddingBottom: 5, marginBottom: 10,
+    }}
+    >
+
+      <div style={{
+        display: 'flex',
+        paddingLeft: 5,
+      }}
+      >
+        <div style={{ paddingRight: 10 }}>
+          <b>
+            INFORMATION:
+          </b>
+        </div>
+      </div>
+      <div style={{
+        display: 'flex',
+        paddingLeft: 5,
+      }}
+      >
+        <div style={{ paddingRight: 10 }}>
+          <b>
+            <small>GENRES:</small>
+          </b>
+        </div>
+        <div>
+          <small>{info.genres && info.genres.join(', ')}</small>
+        </div>
+      </div>
+      <div style={{
+        display: 'flex',
+        paddingLeft: 5,
+      }}
+      >
+        <div style={{ paddingRight: 10 }}>
+          <b>
+            <small>DEVELOPER:</small>
+          </b>
+        </div>
+        <div>
+          <small>{info.developer && info.developer.join(', ')}</small>
+        </div>
+      </div>
+      <div style={{
+        display: 'flex',
+        paddingLeft: 5,
+      }}
+      >
+        <div style={{ paddingRight: 10 }}>
+          <b>
+            <small>PUBLISHER:</small>
+          </b>
+        </div>
+        <div>
+          <small>{info.publisher && info.publisher.join(', ')}</small>
+        </div>
+      </div>
+      <div style={{
+        display: 'flex',
+        paddingLeft: 5,
+      }}
+      >
+        <div style={{ paddingRight: 10 }}>
+          <b>
+            <small>SUPPORTING:</small>
+          </b>
+        </div>
+        <div>
+          <small>{info.supporting && info.supporting.join(', ')}</small>
+        </div>
+      </div>
+
+      <div style={{
+        display: 'flex',
+        paddingLeft: 5,
+      }}
+      >
+        <div style={{ paddingRight: 10 }}>
+          <b>
+            <small>PLATFORMS:</small>
+          </b>
+        </div>
+        <div>
+          <small>{info.platforms && info.platforms.join(', ')}</small>
+        </div>
+      </div>
+
+      <div style={{
+        display: 'flex',
+        paddingLeft: 5,
+      }}
+      >
+        <div style={{ paddingRight: 10 }}>
+          <b>
+            <small>ESRB RATING:</small>
+          </b>
+        </div>
+        <div>
+          <small>{info.ESRB}</small>
+        </div>
+      </div>
+
+      <div style={{
+        display: 'flex',
+        paddingLeft: 5,
+      }}
+      >
+        <div style={{ paddingRight: 10 }}>
+          <b>
+            <small>PEGI RATING:</small>
+          </b>
+        </div>
+        <div>
+          <small>{info.PEGI}</small>
+        </div>
+      </div>
+
+    </Card>
+  );
+
   return (
     <Container style={{ paddingTop: 25 }}>
       {gameFound
@@ -387,14 +576,17 @@ function GameInfo() {
               alignItems: 'flex-start',
             }}
             >
-              <Col xs="auto" style={{ marginBottom: 15 }}>
+              <Col style={{ marginBottom: 15, maxWidth: 289 }}>
                 {info.cover
                   ? <img src={info.cover} width={264} height={374} alt={info.title} />
                   : <h3><strong>No Cover Found</strong></h3>}
+
+                <hr />
+                {generalInfo}
               </Col>
               <Col>
                 {rankingInfo}
-                {addToListForm}
+                {user && addToListForm}
                 <h3><strong>Synopsis</strong></h3>
                 <hr />
                 <h5>

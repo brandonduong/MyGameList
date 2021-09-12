@@ -82,23 +82,29 @@ function GameReview(props) {
 
             {helpful ? (
               <span style={{ overflowWrap: 'break-word' }}>
-                Thanks for your feedback!
-                {' '}
-                <span style={{ fontWeight: 'bold' }}>You found this review helpful.</span>
-                {' '}
-                <strong
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => {
-                    console.log('Helpful - 1', props.user);
-                    setHelpfulCount(helpfulCount - 1);
-                    setHelpful(!helpful);
-                    helpfulReview(false);
-                  }}
-                >
-                  Undo
-                </strong>
+                {props.user
+                  ? (
+                    <span>
+                      Thanks for your feedback!
+                      {' '}
+                      <span style={{ fontWeight: 'bold' }}>You found this review helpful.</span>
+                      {' '}
+                      <strong
+                        style={{
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => {
+                          console.log('Helpful - 1', props.user);
+                          setHelpfulCount(helpfulCount - 1);
+                          setHelpful(!helpful);
+                          helpfulReview(false);
+                        }}
+                      >
+                        Undo
+                      </strong>
+                    </span>
+                  )
+                  : <span style={{ fontWeight: 'bold' }}>Please login to mark as helpful.</span>}
               </span>
             ) : (
               <span style={{ overflowWrap: 'break-word' }}>
@@ -110,7 +116,9 @@ function GameReview(props) {
                   }}
                   onClick={() => {
                     console.log('Helpful + 1', props.user);
-                    setHelpfulCount(helpfulCount + 1);
+                    if (props.user) {
+                      setHelpfulCount(helpfulCount + 1);
+                    }
                     setHelpful(!helpful);
                     helpfulReview(true);
                   }}
