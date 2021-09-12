@@ -12,8 +12,6 @@ const options = {
     }
 };
 
-let accessToken = ''
-
 function getAT(callback) {
     // Get twitch access token
     request.post(options, (err, res1, body) => {
@@ -33,15 +31,23 @@ gameInfo = (req, res) => {
 
     // Get twitch access token
     getAT(function (err, result) {
-        console.log("AT:" + result)
         AT = result
 
         // Use access token
         let promise = new Promise(function (resolve, reject) {
             gameRequest(AT, gameId, function (err, result) {
-                    info = JSON.parse(result)
-                    console.log(info)
+                info = JSON.parse(result)
+                console.log(info)
+
+                // Get all user reviews for gameId that have a thoughts component
+                Review.find({gameId: gameId, thoughts: {"$ne": ""}}, (err, reviews) => {
+                    if (err) {
+                        return res.status(400).json({ success: false, error: err })
+                    }
+                    console.log(reviews)
+                    info[0].reviews = reviews
                     resolve()
+                }).catch(err => console.log(err))
                 })
             });
 

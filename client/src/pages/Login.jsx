@@ -68,6 +68,7 @@ function Login(props) {
           value={username}
           onChange={onChange}
           required
+          maxLength={20}
         />
         <Form.Label>Password:</Form.Label>
         <Form.Control
@@ -77,6 +78,7 @@ function Login(props) {
           value={password}
           onChange={onChange}
           required
+          maxLength={50}
         />
         {/*
                 <i onClick={togglePasswordVisibility} style={{position: "relative",

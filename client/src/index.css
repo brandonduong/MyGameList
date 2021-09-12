@@ -84,7 +84,7 @@ h1, form, strong {
   color: var(--accent-color) !important;
 }
 
-h5, small {
+h5, h3, small {
   color: var(--nav-bar-color) !important;
 }
 
@@ -125,4 +125,12 @@ h5, small {
   background-color: white;
   border: 2px solid var(--nav-bar-color);
   padding: 10px;
+}
+
+.scrollable-list {
+  max-height: 600px;
+  overflow-y: scroll;
+  padding-right: 10px;
+  max-width: 1008px;
+  margin-bottom: 10px;
 }

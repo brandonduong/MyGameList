@@ -53,6 +53,7 @@ function SignUp(props) {
           value={username}
           onChange={onChange}
           required
+          maxLength={20}
         />
         <Form.Label>Email address:</Form.Label>
         <Form.Control
@@ -62,6 +63,7 @@ function SignUp(props) {
           value={email}
           onChange={onChange}
           required
+          maxLength={50}
         />
         <Form.Label>Password:</Form.Label>
         <Form.Control
@@ -71,6 +73,7 @@ function SignUp(props) {
           value={password}
           onChange={onChange}
           required
+          maxLength={50}
         />
         {/*
                 <i onClick={togglePasswordVisibility} style={{position: "relative",

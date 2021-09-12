@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Button, Col, Container, Form, Row,
+  Button, Col, Container, Form, ListGroup, Row,
 } from 'react-bootstrap';
 import { useParams } from 'react-router';
 import { Card } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import { useAuth } from '../context/auth/AuthContext';
 import { GAME_STATUS } from '../constants/gameStatus';
+import { GameReview } from '../components';
 
 function GameInfo() {
   const { gameId } = useParams();
@@ -54,6 +55,7 @@ function GameInfo() {
           first_release_date: new Date(data[0].first_release_date * 1000).toDateString().split('').splice(4)
             .join(''),
           summary: data[0].summary,
+          reviews: data[0].reviews,
         });
         setGameFound(true);
       })
@@ -234,6 +236,25 @@ function GameInfo() {
     </Card>
   );
 
+  const reviewsList = (
+    <div className="scrollable-list">
+      {info.reviews.map((review, index) => (
+        <GameReview
+          key={`review-${index}`}
+          index={index}
+          username={review.username}
+          updatedAt={review.updatedAt}
+          hours={review.hours}
+          rating={review.rating}
+          thoughts={review.thoughts}
+          helpful={review.helpful}
+          user={user}
+          id={review._id}
+        />
+      ))}
+    </div>
+  );
+
   const rankingInfo = (
     <Card style={{
       paddingLeft: 10, paddingTop: 10, paddingBottom: 5, marginBottom: 10,
@@ -325,7 +346,7 @@ function GameInfo() {
   );
 
   return (
-    <Container md="auto" style={{ paddingTop: 25 }}>
+    <Container style={{ paddingTop: 25 }}>
       {gameFound
         ? (
           <span>
@@ -339,8 +360,13 @@ function GameInfo() {
             )}
             <hr />
 
-            <Row>
-              <Col xs="auto" style={{ alignItems: 'flex-end' }}>
+            <Row style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+            }}
+            >
+              <Col xs="auto" style={{ marginBottom: 15 }}>
                 {info.cover
                   ? <img src={info.cover} width={264} height={374} alt={info.title} />
                   : <h3><strong>No Cover Found</strong></h3>}
@@ -353,6 +379,11 @@ function GameInfo() {
                 <h5>
                   {info.summary}
                 </h5>
+
+                <h3><strong>Reviews</strong></h3>
+                <hr />
+                {reviewsList}
+
               </Col>
             </Row>
           </span>

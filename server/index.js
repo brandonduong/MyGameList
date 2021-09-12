@@ -5,6 +5,7 @@ const cors = require('cors')
 const db = require('./db')
 const userRouter = require('./routes/user-router')
 const videogamelistRouter = require('./routes/video-game-list-router')
+const reviewRouter = require('./routes/review-router')
 const gameRouter = require('./routes/game-router')
 const gameRankingRouter = require('./routes/gameranking-router')
 const cookieParser = require('cookie-parser')
@@ -27,6 +28,7 @@ app.get('/', (req, res) => {
 
 app.use('/api', userRouter)
 app.use('/api', videogamelistRouter)
+app.use('/api', reviewRouter)
 app.use('/api', gameRouter)
 app.use('/api', gameRankingRouter)
 
