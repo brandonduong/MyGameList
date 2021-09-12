@@ -147,7 +147,7 @@ function GameList() {
     [currentList],
   );
 
-  function updateReview(id, change) {
+  async function updateReview(id, change) {
     console.log(id, change);
     fetch(`/api/updateReview/${id}`, {
       method: 'PUT',
@@ -224,10 +224,10 @@ function GameList() {
           drop="right"
           onSelect={((eventKey) => {
             console.log(params, currentList);
-            updateReview(params.id, JSON.stringify({ status: eventKey }));
-
-            // Update row client side
-            setNewCurrentList(true);
+            updateReview(params.id, JSON.stringify({ status: eventKey })).then(() => {
+              // Update row client side
+              setNewCurrentList(true);
+            });
           })}
         >
           <Dropdown.Toggle variant="success" id="dropdown-basic" className="dropdown-game-status">
@@ -376,13 +376,15 @@ function GameList() {
 
     // Update backend
     updateReview(fullThoughts.id,
-      JSON.stringify({ thoughts: fullThoughts.thoughts, updatedAt: new Date() }));
+      JSON.stringify({
+        thoughts: fullThoughts.thoughts,
+        updatedAt: new Date(),
+      })).then(() => { // Update row client side
+      setNewCurrentList(true);
+    });
 
     // Close modal
     setFullThoughts({});
-
-    // Update row client side
-    setNewCurrentList(true);
   }
 
   return (

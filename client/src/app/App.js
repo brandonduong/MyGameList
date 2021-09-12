@@ -1,5 +1,5 @@
 import React, {Component, useEffect, useState} from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {BrowserRouter as Router, HashRouter, Route, Switch} from 'react-router-dom';
 import {
   Home, Profile, Login, SignUp, GameInfo, SearchResults, GameList,
 } from '../pages/index';
@@ -18,7 +18,7 @@ function App() {
   return (
     <div className="general-container">
       <AuthProvider>
-        <Router>
+        <HashRouter>
           <NavBar />
           <Container fluid>
             {/*
@@ -46,7 +46,7 @@ function App() {
               */}
           </Container>
           {/* <GoogleAds slot={'6180999739'} /> */}
-        </Router>
+        </HashRouter>
       </AuthProvider>
     </div>
   );

@@ -134,14 +134,18 @@ function GameListTabs(props) {
                 <ListGroupItem
                   action
                   onClick={() => linkToList(`${profileUser}/${list.name}`)}
-                  style={{border: 'none', padding: 0, paddingTop: 10 }}
+                  style={{ border: 'none', padding: 0, paddingTop: 10 }}
                 >
                   <h3><strong>{list.name}</strong></h3>
                 </ListGroupItem>
               </Col>
               {user === profileUser && (
                 <Col xs="auto">
-                  <Button className="submit-button" onClick={() => deleteList(list.name)} style={{paddingTop: 8}}><h3>X</h3></Button>
+                  <Button className="submit-button" onClick={() => deleteList(list.name)} style={{ paddingTop: 8 }}>
+                    <h3>
+                      <span style={{ color: 'white' }}>X</span>
+                    </h3>
+                  </Button>
                 </Col>
               )}
             </Row>
