@@ -55,7 +55,7 @@ function GameInfo() {
           first_release_date: new Date(data[0].first_release_date * 1000).toDateString().split('').splice(4)
             .join(''),
           summary: data[0].summary,
-          reviews: data[0].reviews,
+          reviews: data[0].reviews.sort(compareReviewHelpfulness),
         });
         setGameFound(true);
       })
@@ -235,6 +235,17 @@ function GameInfo() {
       </Form>
     </Card>
   );
+
+  // Make more helpful reviews be shown first
+  function compareReviewHelpfulness(a, b) {
+    if (a.helpful.length > b.helpful.length) {
+      return -1;
+    }
+    if (a.helpful.length < b.helpful.length) {
+      return 1;
+    }
+    return 0;
+  }
 
   const reviewsList = (
     <div className="scrollable-list">

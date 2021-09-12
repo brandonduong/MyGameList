@@ -12,7 +12,9 @@ function SearchBar() {
 
   function onSearch(event) {
     event.preventDefault();
-    history.push(`/search?q=${query}`);
+    if (query) {
+      history.push(`/search?q=${query}`);
+    }
   }
 
   return (
