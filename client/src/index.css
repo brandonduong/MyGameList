@@ -134,3 +134,12 @@ h5, h3, small {
   max-width: 1008px;
   margin-bottom: 10px;
 }
+
+.scrollable-list-horizontal {
+  max-height: 600px;
+  overflow-x: scroll;
+  padding-right: 10px;
+  max-width: 1008px;
+  margin-bottom: 10px;
+  white-space: nowrap;
+}

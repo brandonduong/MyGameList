@@ -74,7 +74,8 @@ function gameRequest(accessToken, gameId, callback){
         body: `fields name, summary, videos.*, artworks.url, artworks.width, artworks.height,
          first_release_date, cover.url, genres.name, involved_companies.*,
          involved_companies.company.name, similar_games.id, age_ratings.category, age_ratings.rating,
-         platforms.abbreviation, platforms.name; where category = 0; where id = ${gameId};`,
+         platforms.abbreviation, platforms.name, similar_games.cover.url, similar_games; 
+         where category = 0; where id = ${gameId};`,
         headers: {
             'Client-ID': process.env.CLIENT_ID,
             'Authorization': 'Bearer ' + accessToken

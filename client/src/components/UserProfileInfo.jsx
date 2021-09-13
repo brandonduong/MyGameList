@@ -49,7 +49,7 @@ function UserProfileInfo() {
           <span>
             <Row>
               <Col>
-                <h1>{profileUser}</h1>
+                <h1><strong>{profileUser}</strong></h1>
                 <h5>
                   Member since
                   {' '}

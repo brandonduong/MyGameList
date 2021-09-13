@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Button, Col, Container, Form, ListGroup, Row,
 } from 'react-bootstrap';
-import { useParams } from 'react-router';
+import {useHistory, useParams} from 'react-router';
 import { Card } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import { useAuth } from '../context/auth/AuthContext';
@@ -28,6 +28,7 @@ function GameInfo() {
   const [cumulativeHours, setCumulativeHours] = useState(0);
   const [reviewStatus, setReviewStatus] = useState(0);
   // const [alreadyReviewed, setAlreadyReviewed] = useState(false)
+  const history = useHistory();
 
   const {
     state: { user },
@@ -94,7 +95,7 @@ function GameInfo() {
         let ESRB = 'N/A';
         let PEGI = 'N/A';
         data[0].age_ratings.forEach((ageRating) => {
-          console.log(ageRating)
+          console.log(ageRating);
           switch (ageRating.category) {
             case 1:
               if (ageRating.rating) {
@@ -127,6 +128,7 @@ function GameInfo() {
           platforms,
           ESRB,
           PEGI,
+          similar_games: data[0].similar_games,
         });
       })
       .catch((err) => {
@@ -208,12 +210,12 @@ function GameInfo() {
           // Update ranking live on client side
           setRating(
             Math.round(((((rating * members) + starForAdding)
-                / (members + 1)) + Number.EPSILON) * 100) / 100,
+                    / (members + 1)) + Number.EPSILON) * 100) / 100,
           );
           setMembers(members + 1);
           setCumulativeHours(
             Math.round((((parseInt(cumulativeHours, 10) + parseInt(hoursForAdding, 10))
-                + Number.EPSILON) * 100) / 100),
+                    + Number.EPSILON) * 100) / 100),
           );
 
           // Reset add to list parameters
@@ -343,6 +345,22 @@ function GameInfo() {
     </div>
   );
 
+  const similarGames = (
+    <div className="scrollable-list-horizontal">
+      {info.similar_games && info.similar_games.map((game, key) => (
+        <img
+          key={`similar-${key}`}
+          style={{ marginBottom: 15, marginRight: 15, cursor: 'pointer' }}
+          src={game.cover.url.replace('t_thumb', 't_cover_small')}
+          width={90}
+          height={128}
+          alt={game.id}
+          onClick={() => { history.push(`/game/${game.id}`); }}
+        />
+      ))}
+    </div>
+  );
+
   const rankingInfo = (
     <Card style={{
       paddingLeft: 10, paddingTop: 10, paddingBottom: 5, marginBottom: 10,
@@ -433,6 +451,25 @@ function GameInfo() {
     </Card>
   );
 
+  function generalInfoSection(title, infoPoint) {
+    return (
+      <div style={{
+        display: 'flex',
+        paddingLeft: 5,
+      }}
+      >
+        <div style={{ paddingRight: 10 }}>
+          <b>
+            <small>{title}</small>
+          </b>
+        </div>
+        <div>
+          <small>{infoPoint}</small>
+        </div>
+      </div>
+    );
+  }
+
   const generalInfo = (
     <Card style={{
       paddingLeft: 10, paddingRight: 10, paddingTop: 10, paddingBottom: 5, marginBottom: 10,
@@ -450,108 +487,16 @@ function GameInfo() {
           </b>
         </div>
       </div>
-      <div style={{
-        display: 'flex',
-        paddingLeft: 5,
-      }}
-      >
-        <div style={{ paddingRight: 10 }}>
-          <b>
-            <small>GENRES:</small>
-          </b>
-        </div>
-        <div>
-          <small>{info.genres && info.genres.join(', ')}</small>
-        </div>
+      <div style={{ paddingLeft: 5, paddingRight: 5 }}>
+        <hr style={{ margin: 0 }} />
       </div>
-      <div style={{
-        display: 'flex',
-        paddingLeft: 5,
-      }}
-      >
-        <div style={{ paddingRight: 10 }}>
-          <b>
-            <small>DEVELOPER:</small>
-          </b>
-        </div>
-        <div>
-          <small>{info.developer && info.developer.join(', ')}</small>
-        </div>
-      </div>
-      <div style={{
-        display: 'flex',
-        paddingLeft: 5,
-      }}
-      >
-        <div style={{ paddingRight: 10 }}>
-          <b>
-            <small>PUBLISHER:</small>
-          </b>
-        </div>
-        <div>
-          <small>{info.publisher && info.publisher.join(', ')}</small>
-        </div>
-      </div>
-      <div style={{
-        display: 'flex',
-        paddingLeft: 5,
-      }}
-      >
-        <div style={{ paddingRight: 10 }}>
-          <b>
-            <small>SUPPORTING:</small>
-          </b>
-        </div>
-        <div>
-          <small>{info.supporting && info.supporting.join(', ')}</small>
-        </div>
-      </div>
-
-      <div style={{
-        display: 'flex',
-        paddingLeft: 5,
-      }}
-      >
-        <div style={{ paddingRight: 10 }}>
-          <b>
-            <small>PLATFORMS:</small>
-          </b>
-        </div>
-        <div>
-          <small>{info.platforms && info.platforms.join(', ')}</small>
-        </div>
-      </div>
-
-      <div style={{
-        display: 'flex',
-        paddingLeft: 5,
-      }}
-      >
-        <div style={{ paddingRight: 10 }}>
-          <b>
-            <small>ESRB RATING:</small>
-          </b>
-        </div>
-        <div>
-          <small>{info.ESRB}</small>
-        </div>
-      </div>
-
-      <div style={{
-        display: 'flex',
-        paddingLeft: 5,
-      }}
-      >
-        <div style={{ paddingRight: 10 }}>
-          <b>
-            <small>PEGI RATING:</small>
-          </b>
-        </div>
-        <div>
-          <small>{info.PEGI}</small>
-        </div>
-      </div>
-
+      {generalInfoSection('GENRES:', info.genres && info.genres.join(', '))}
+      {generalInfoSection('DEVELOPER:', info.developer && info.developer.join(', '))}
+      {generalInfoSection('PUBLISHER:', info.publisher && info.publisher.join(', '))}
+      {generalInfoSection('SUPPORTING:', info.supporting && info.supporting.join(', '))}
+      {generalInfoSection('PLATFORMS:', info.platforms && info.platforms.join(', '))}
+      {generalInfoSection('ESRB RATING:', info.ESRB)}
+      {generalInfoSection('PEGI RATING:', info.PEGI)}
     </Card>
   );
 
@@ -562,11 +507,11 @@ function GameInfo() {
           <span>
             <h1><strong>{info.title}</strong></h1>
             {info.first_release_date !== 'lid Date' && (
-            <h5>
-              First released
-              {' '}
-              <em>{info.first_release_date}</em>
-            </h5>
+              <h5>
+                First released
+                {' '}
+                <em>{info.first_release_date}</em>
+              </h5>
             )}
             <hr />
 
@@ -588,15 +533,18 @@ function GameInfo() {
                 {rankingInfo}
                 {user && addToListForm}
                 <h3><strong>Synopsis</strong></h3>
-                <hr />
+                <hr style={{ marginTop: 0 }} />
                 <h5>
                   {info.summary}
                 </h5>
 
                 <h3><strong>Reviews</strong></h3>
-                <hr />
+                <hr style={{ marginTop: 0 }} />
                 {reviewsList}
 
+                <h3><strong>Similar Games</strong></h3>
+                <hr style={{ marginTop: 0 }} />
+                {similarGames}
               </Col>
             </Row>
           </span>
