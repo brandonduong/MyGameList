@@ -2,11 +2,13 @@ import { Col, Row } from 'react-bootstrap';
 import { Rating } from '@material-ui/lab';
 import { Card } from '@material-ui/core';
 import React, { useState } from 'react';
+import {useHistory} from "react-router";
 
 function GameReview(props) {
   const [readMore, setReadMore] = useState(false);
   const [helpfulCount, setHelpfulCount] = useState(props.helpful.length);
   const [helpful, setHelpful] = useState(props.helpful.includes(props.user));
+  const history = useHistory();
 
   function helpfulReview(like) {
     fetch('/api/helpfulReview', {
@@ -44,7 +46,7 @@ function GameReview(props) {
     >
       <Row>
         <Col>
-          <h3>{props.username}</h3>
+          <h3 onClick={() => history.push(`/profile/${props.username}`)} style={{cursor: 'pointer'}}>{props.username}</h3>
           <em>
             {helpfulCount}
             {' '}

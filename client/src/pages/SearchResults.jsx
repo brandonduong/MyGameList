@@ -82,7 +82,7 @@ function SearchResults() {
         <Card.Header>
           <h1>
             <strong>
-              Search results for:
+              Search Results For:
             </strong>
             {' '}
             <small>

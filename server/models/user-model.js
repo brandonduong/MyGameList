@@ -7,7 +7,8 @@ const saltRounds = 10;
 const User = new Schema ({
     username: { type: String, required: true, unique: true, maxlength: 20},
     email: { type: String, required: true, unique: true, maxlength: 50},
-    password: { type: String, required: true, maxlength: 50}
+    password: { type: String, required: true, maxlength: 50},
+    bio: { type: String, required: false, maxlength: 500, default: 'Welcome to MyGameList!'}
     },
     { timestamps: true }
 )

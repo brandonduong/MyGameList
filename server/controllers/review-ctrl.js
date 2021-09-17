@@ -78,7 +78,10 @@ async function updateGameScore(gameId, review){
                 });
 
                 // Round rating 2 decimals
-                game.rating = Math.round(((totalRating / reviewers.size) + Number.EPSILON) * 100) / 100
+                game.rating = 0;
+                if (reviewers.size > 0) {
+                    game.rating = Math.round(((totalRating / reviewers.size) + Number.EPSILON) * 100) / 100
+                }
                 game.members = reviewers.size
                 game.locked = false
                 game.cumulativeHours = Math.round(((totalHours) + Number.EPSILON) * 100) / 100
@@ -147,6 +150,8 @@ removeReview = async (req, res) => {
             return res
                 .status(404)
                 .json({ success: false, error: `Review not found` })
+        } else {
+            updateGameScore(review.gameId)
         }
 
         return res.status(200).json({ success: true })

@@ -466,7 +466,7 @@ function GameList() {
                 Save
               </Button>
             </Form>
-          ) : (<span>{fullThoughts.thoughts}</span>)}
+          ) : (<span style={{ wordBreak: 'break-word' }}>{fullThoughts.thoughts}</span>)}
         </div>
       </Modal>
     </Container>

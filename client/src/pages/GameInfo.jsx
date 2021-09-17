@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {
   Button, Col, Container, Form, ListGroup, Row,
 } from 'react-bootstrap';
-import {useHistory, useParams} from 'react-router';
-import { Card } from '@material-ui/core';
+import { useHistory, useParams } from 'react-router';
+import { Card, Popover } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import { useAuth } from '../context/auth/AuthContext';
 import { GAME_STATUS } from '../constants/gameStatus';
@@ -36,6 +36,7 @@ function GameInfo() {
 
   useEffect(() => {
     console.log(gameId);
+    setGameFound(false);
     fetch('/api/game', {
       method: 'POST',
       body: JSON.stringify({ gameId }),
@@ -63,56 +64,106 @@ function GameInfo() {
 
         // Parse genres
         const genres = [];
-        data[0].genres.forEach((genre) => {
-          genres.push(genre.name);
-        });
+        if (data[0].genres) {
+          data[0].genres.forEach((genre) => {
+            genres.push(genre.name);
+          });
+        }
 
         // Parse involved companies
         const developer = [];
         const publisher = [];
         const supporting = [];
-        data[0].involved_companies.forEach((company) => {
-          if (company.developer) {
-            developer.push(company.company.name);
-          }
+        if (data[0].involved_companies) {
+          data[0].involved_companies.forEach((company) => {
+            if (company.developer) {
+              developer.push(company.company.name);
+            }
 
-          if (company.publisher) {
-            publisher.push(company.company.name);
-          }
+            if (company.publisher) {
+              publisher.push(company.company.name);
+            }
 
-          if (company.supporting) {
-            supporting.push(company.company.name);
-          }
-        });
+            if (company.supporting) {
+              supporting.push(company.company.name);
+            }
+          });
+        }
 
         // Parse platforms
         const platforms = [];
-        data[0].platforms.forEach((platform) => {
-          platforms.push(`${platform.name} (${platform.abbreviation})`);
-        });
+        if (data[0].platforms) {
+          data[0].platforms.forEach((platform) => {
+            platforms.push(`${platform.name} (${platform.abbreviation})`);
+          });
+        }
 
         // Parse age ratings
         let ESRB = 'N/A';
         let PEGI = 'N/A';
-        data[0].age_ratings.forEach((ageRating) => {
-          console.log(ageRating);
-          switch (ageRating.category) {
-            case 1:
-              if (ageRating.rating) {
-                ESRB = AGE_RATING[ageRating.rating];
-              }
-              break;
+        if (data[0].age_ratings) {
+          data[0].age_ratings.forEach((ageRating) => {
+            console.log(ageRating);
+            switch (ageRating.category) {
+              case 1:
+                if (ageRating.rating) {
+                  ESRB = AGE_RATING[ageRating.rating];
+                }
+                break;
 
-            case 2:
-              if (ageRating.rating) {
-                PEGI = AGE_RATING[ageRating.rating];
-              }
-              break;
+              case 2:
+                if (ageRating.rating) {
+                  PEGI = AGE_RATING[ageRating.rating];
+                }
+                break;
 
-            default:
-              break;
-          }
-        });
+              default:
+                break;
+            }
+          });
+        }
+
+        // Parse alternative names
+        const alt_names = [];
+        if (data[0].alternative_names) {
+          data[0].alternative_names.forEach((alternative_name) => {
+            if (alternative_name.comment === 'Other' || alternative_name.comment === 'Alternative spelling'
+                || alternative_name.comment === 'Acronym' || alternative_name.comment === 'Short-name') {
+              alt_names.push(alternative_name.name);
+            }
+          });
+        }
+
+        // Parse player perspectives
+        const player_perspectives = [];
+        if (data[0].player_perspectives) {
+          data[0].player_perspectives.forEach((player_perspective) => {
+            player_perspectives.push(player_perspective.name);
+          });
+        }
+
+        // Parse collection
+        const collection = [];
+        if (data[0].collection) {
+          data[0].collection.games.forEach((game) => {
+            // Only add if it is not the same as the current page
+            if (game.id !== parseInt(gameId, 10)) {
+              collection.push(game);
+            }
+          });
+        }
+        console.log(collection);
+
+        // Parse similar games
+        const similar = [];
+        if (data[0].similar_games) {
+          data[0].similar_games.forEach((game) => {
+            // Only add if it is not in the same collection as the current page
+            if (!collection.some((collectionGame) => collectionGame.id === game.id)) {
+              similar.push(game);
+            }
+          });
+        }
 
         setInfo({
           title: data[0].name,
@@ -128,7 +179,11 @@ function GameInfo() {
           platforms,
           ESRB,
           PEGI,
-          similar_games: data[0].similar_games,
+          similar_games: similar,
+          alt_names,
+          player_perspectives,
+          collection_name: data[0].collection.name,
+          collection,
         });
       })
       .catch((err) => {
@@ -327,39 +382,69 @@ function GameInfo() {
   }
 
   const reviewsList = (
-    <div className="scrollable-list">
-      {info.reviews.map((review, index) => (
-        <GameReview
-          key={`review-${index}`}
-          index={index}
-          username={review.username}
-          updatedAt={review.updatedAt}
-          hours={review.hours}
-          rating={review.rating}
-          thoughts={review.thoughts}
-          helpful={review.helpful}
-          user={user}
-          id={review._id}
-        />
-      ))}
+    <div>
+      {info.reviews.length === 0 ? (
+        <Card
+          style={{
+            paddingLeft: 10,
+            paddingTop: 5,
+            paddingRight: 10,
+            marginBottom: 10,
+          }}
+        >
+          <h5>
+            Be the first to review! Just add
+            {' '}
+            {info.title}
+            {' '}
+            to your game list!
+          </h5>
+        </Card>
+      )
+        : (
+          <div className="scrollable-list">
+            {info.reviews.map((review, index) => (
+              <GameReview
+                key={`review-${index}`}
+                index={index}
+                username={review.username}
+                updatedAt={review.updatedAt}
+                hours={review.hours}
+                rating={review.rating}
+                thoughts={review.thoughts}
+                helpful={review.helpful}
+                user={user}
+                id={review._id}
+              />
+            ))}
+          </div>
+        )}
     </div>
   );
 
-  const similarGames = (
-    <div className="scrollable-list-horizontal">
-      {info.similar_games && info.similar_games.map((game, key) => (
-        <img
-          key={`similar-${key}`}
-          style={{ marginBottom: 15, marginRight: 15, cursor: 'pointer' }}
-          src={game.cover.url.replace('t_thumb', 't_cover_small')}
-          width={90}
-          height={128}
-          alt={game.id}
-          onClick={() => { history.push(`/game/${game.id}`); }}
-        />
-      ))}
-    </div>
-  );
+  function listOfGames(games) {
+    return (
+      <div className="scrollable-list-horizontal">
+        {games && games.map((game, key) => (
+          <img
+            key={`similar-${key}`}
+            style={{
+              marginBottom: 15,
+              marginRight: 15,
+              cursor: 'pointer',
+            }}
+            className="game-cover"
+            title={game.name}
+            src={game.cover.url.replace('t_thumb', 't_cover_small')}
+            width={90}
+            height={128}
+            alt={game.id}
+            onClick={() => { history.push(`/game/${game.id}`); }}
+          />
+        ))}
+      </div>
+    );
+  }
 
   const rankingInfo = (
     <Card style={{
@@ -453,19 +538,24 @@ function GameInfo() {
 
   function generalInfoSection(title, infoPoint) {
     return (
-      <div style={{
-        display: 'flex',
-        paddingLeft: 5,
-      }}
-      >
-        <div style={{ paddingRight: 10 }}>
-          <b>
-            <small>{title}</small>
-          </b>
+      <div>
+        {infoPoint
+        && (
+        <div style={{
+          display: 'flex',
+          paddingLeft: 5,
+        }}
+        >
+          <div style={{ paddingRight: 10 }}>
+            <b>
+              <small>{title}</small>
+            </b>
+          </div>
+          <div>
+            <small>{infoPoint}</small>
+          </div>
         </div>
-        <div>
-          <small>{infoPoint}</small>
-        </div>
+        )}
       </div>
     );
   }
@@ -490,11 +580,13 @@ function GameInfo() {
       <div style={{ paddingLeft: 5, paddingRight: 5 }}>
         <hr style={{ margin: 0 }} />
       </div>
-      {generalInfoSection('GENRES:', info.genres && info.genres.join(', '))}
+      {generalInfoSection('NAMES:', info.alt_names && info.alt_names.join(', '))}
       {generalInfoSection('DEVELOPER:', info.developer && info.developer.join(', '))}
       {generalInfoSection('PUBLISHER:', info.publisher && info.publisher.join(', '))}
       {generalInfoSection('SUPPORTING:', info.supporting && info.supporting.join(', '))}
       {generalInfoSection('PLATFORMS:', info.platforms && info.platforms.join(', '))}
+      {generalInfoSection('GENRES:', info.genres && info.genres.join(', '))}
+      {generalInfoSection('PERSPECTIVE:', info.player_perspectives && info.player_perspectives.join(', '))}
       {generalInfoSection('ESRB RATING:', info.ESRB)}
       {generalInfoSection('PEGI RATING:', info.PEGI)}
     </Card>
@@ -505,9 +597,9 @@ function GameInfo() {
       {gameFound
         ? (
           <span>
-            <h1><strong>{info.title}</strong></h1>
+            <h1><strong style={{ textShadow: '1px 1px 1px #9E9E9E' }}>{info.title}</strong></h1>
             {info.first_release_date !== 'lid Date' && (
-              <h5>
+              <h5 style={{ textShadow: '1px 1px 1px #9E9E9E' }}>
                 First released
                 {' '}
                 <em>{info.first_release_date}</em>
@@ -523,7 +615,7 @@ function GameInfo() {
             >
               <Col style={{ marginBottom: 15, maxWidth: 289 }}>
                 {info.cover
-                  ? <img src={info.cover} width={264} height={374} alt={info.title} />
+                  ? <img src={info.cover} width={264} height={374} alt={info.title} className="game-cover" />
                   : <h3><strong>No Cover Found</strong></h3>}
 
                 <hr />
@@ -532,19 +624,29 @@ function GameInfo() {
               <Col>
                 {rankingInfo}
                 {user && addToListForm}
-                <h3><strong>Synopsis</strong></h3>
+                <h3><strong style={{ textShadow: '1px 1px 1px #9E9E9E' }}>Synopsis</strong></h3>
                 <hr style={{ marginTop: 0 }} />
                 <h5>
                   {info.summary}
                 </h5>
 
-                <h3><strong>Reviews</strong></h3>
+                <h3><strong style={{ textShadow: '1px 1px 1px #9E9E9E' }}>Reviews</strong></h3>
                 <hr style={{ marginTop: 0 }} />
                 {reviewsList}
 
-                <h3><strong>Similar Games</strong></h3>
+                <h3>
+                  <strong style={{ textShadow: '1px 1px 1px #9E9E9E' }}>
+                    More
+                    {' '}
+                    {info.collection_name}
+                  </strong>
+                </h3>
                 <hr style={{ marginTop: 0 }} />
-                {similarGames}
+                {listOfGames(info.collection)}
+
+                <h3><strong style={{ textShadow: '1px 1px 1px #9E9E9E' }}>Other Similar Games</strong></h3>
+                <hr style={{ marginTop: 0 }} />
+                {listOfGames(info.similar_games)}
               </Col>
             </Row>
           </span>
