@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import {
-  Button, Card, Container, Form,
+  Button, Card, Col, Container, Form, Row,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
+
+const eye = <FontAwesomeIcon icon={faEye} />;
+const eyeSlash = <FontAwesomeIcon icon={faEyeSlash} />;
 
 function SignUp(props) {
   const [user, setUser] = useState({
@@ -14,6 +19,10 @@ function SignUp(props) {
   const { username, email, password } = user;
 
   const [showPassword, setShowPassword] = useState(false);
+
+  function togglePasswordVisibility() {
+    setShowPassword(showPassword === false);
+  }
 
   const onChange = (e) => setUser((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -66,15 +75,33 @@ function SignUp(props) {
           maxLength={50}
         />
         <Form.Label>Password:</Form.Label>
-        <Form.Control
-          type={showPassword ? 'text' : 'password'}
-          name="password"
-          placeholder="Enter password"
-          value={password}
-          onChange={onChange}
-          required
-          maxLength={50}
-        />
+        <Row>
+          <Col>
+            <Form.Control
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              placeholder="Enter password"
+              value={password}
+              onChange={onChange}
+              required
+              maxLength={50}
+            />
+          </Col>
+          <Col
+            xs={1}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <i
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? eye : eyeSlash}
+            </i>
+          </Col>
+        </Row>
         {/*
                 <i onClick={togglePasswordVisibility} style={{position: "relative",
                     display: "flex",
@@ -88,7 +115,7 @@ function SignUp(props) {
 
   return (
     <Container style={{ paddingTop: 75 }}>
-      <Card style={{ width:'50%', left: '25%' }}>
+      <Card style={{ width: '50%', left: '25%' }}>
         <Card.Header>
           <h1>Create new account</h1>
         </Card.Header>

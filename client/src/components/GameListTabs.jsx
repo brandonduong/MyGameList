@@ -140,7 +140,7 @@ function GameListTabs(props) {
                 </ListGroupItem>
               </Col>
               {user === profileUser && (
-                <Col xs="auto">
+                <Col xs="auto" style={{ marginRight: 15 }}>
                   <Button className="submit-button" onClick={() => deleteList(list.name)} style={{ paddingTop: 8 }}>
                     <h3>
                       <span style={{ color: 'white' }}>X</span>
