@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import {
-  Button, Card, Container, Form, Nav,
+  Button, Card, Col, Container, Form, Nav, Row,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../context/auth/AuthContext';
 
 const eye = <FontAwesomeIcon icon={faEye} />;
+const eyeSlash = <FontAwesomeIcon icon={faEyeSlash} />;
 
 function Login(props) {
   const [user, setUser] = useState({
@@ -71,20 +72,33 @@ function Login(props) {
           maxLength={20}
         />
         <Form.Label>Password:</Form.Label>
-        <Form.Control
-          type={showPassword ? 'text' : 'password'}
-          name="password"
-          placeholder="Enter password"
-          value={password}
-          onChange={onChange}
-          required
-          maxLength={50}
-        />
-        {/*
-                <i onClick={togglePasswordVisibility} style={{position: "relative",
-                    display: "flex",
-                    marginTop: 6}}>{eye}</i>
-                */}
+        <Row>
+          <Col>
+            <Form.Control
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              placeholder="Enter password"
+              value={password}
+              onChange={onChange}
+              required
+              maxLength={50}
+            />
+          </Col>
+          <Col
+            xs={1}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <i
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? eye : eyeSlash}
+            </i>
+          </Col>
+        </Row>
         <br />
       </Form.Group>
       <Button type="submit" className="submit-button">Login</Button>

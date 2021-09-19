@@ -76,8 +76,9 @@ function gameRequest(accessToken, gameId, callback){
          involved_companies.company.name, similar_games.id, age_ratings.category, age_ratings.rating,
          platforms.abbreviation, platforms.name, similar_games.cover.url, similar_games.name, screenshots.url,
          alternative_names.comment, alternative_names.name, player_perspectives.name,
-         collection.games.cover.url, collection.name, collection.games.name, dlcs.name, dlcs.cover.url, game_engines.name, game_modes.name,
-         themes.name, websites.category, websites.url, videos.video_id; 
+         collection.games.cover.url, collection.name, collection.games.name, dlcs.name, 
+         dlcs.cover.url, game_engines.name, game_modes.name,
+         themes.name, videos.video_id; 
          where category = 0; where id = ${gameId};`,
         headers: {
             'Client-ID': process.env.CLIENT_ID,

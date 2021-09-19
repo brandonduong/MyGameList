@@ -135,10 +135,10 @@ function GameInfo() {
         }
 
         // Parse player perspectives
-        const player_perspectives = [];
+        const playerPerspectives = [];
         if (data[0].player_perspectives) {
-          data[0].player_perspectives.forEach((player_perspective) => {
-            player_perspectives.push(player_perspective.name);
+          data[0].player_perspectives.forEach((playerPerspective) => {
+            playerPerspectives.push(playerPerspective.name);
           });
         }
 
@@ -159,9 +159,34 @@ function GameInfo() {
         if (data[0].similar_games) {
           data[0].similar_games.forEach((game) => {
             // Only add if it is not in the same collection as the current page
-            if (!collection.some((collectionGame) => collectionGame.id === game.id)) {
+            if (!collection
+                || !collection.some((collectionGame) => collectionGame.id === game.id)) {
               similar.push(game);
             }
+          });
+        }
+
+        // Parse game engines
+        const gameEngines = [];
+        if (data[0].game_engines) {
+          data[0].game_engines.forEach((engine) => {
+            gameEngines.push(engine.name);
+          });
+        }
+
+        // Parse game modes
+        const gameModes = [];
+        if (data[0].game_modes) {
+          data[0].game_modes.forEach((mode) => {
+            gameModes.push(mode.name);
+          });
+        }
+
+        // Parse themes
+        const themes = [];
+        if (data[0].themes) {
+          data[0].themes.forEach((theme) => {
+            themes.push(theme.name);
           });
         }
 
@@ -181,9 +206,12 @@ function GameInfo() {
           PEGI,
           similar_games: similar,
           alt_names,
-          player_perspectives,
-          collection_name: data[0].collection.name,
+          playerPerspectives,
+          collection_name: (data[0].collection ? data[0].collection.name : null),
           collection,
+          gameEngines,
+          gameModes,
+          themes,
         });
       })
       .catch((err) => {
@@ -586,7 +614,10 @@ function GameInfo() {
       {generalInfoSection('SUPPORTING:', info.supporting && info.supporting.join(', '))}
       {generalInfoSection('PLATFORMS:', info.platforms && info.platforms.join(', '))}
       {generalInfoSection('GENRES:', info.genres && info.genres.join(', '))}
-      {generalInfoSection('PERSPECTIVE:', info.player_perspectives && info.player_perspectives.join(', '))}
+      {generalInfoSection('THEMES:', info.themes && info.themes.join(', '))}
+      {generalInfoSection('PERSPECTIVE:', info.playerPerspectives && info.playerPerspectives.join(', '))}
+      {generalInfoSection('ENGINE:', info.gameEngines && info.gameEngines.join(', '))}
+      {generalInfoSection('MODES:', info.gameModes && info.gameModes.join(', '))}
       {generalInfoSection('ESRB RATING:', info.ESRB)}
       {generalInfoSection('PEGI RATING:', info.PEGI)}
     </Card>
@@ -634,15 +665,20 @@ function GameInfo() {
                 <hr style={{ marginTop: 0 }} />
                 {reviewsList}
 
-                <h3>
-                  <strong style={{ textShadow: '1px 1px 1px #9E9E9E' }}>
-                    More
-                    {' '}
-                    {info.collection_name}
-                  </strong>
-                </h3>
-                <hr style={{ marginTop: 0 }} />
-                {listOfGames(info.collection)}
+                {info.collection_name
+                    && (
+                    <span>
+                      <h3>
+                        <strong style={{ textShadow: '1px 1px 1px #9E9E9E' }}>
+                          More
+                          {' '}
+                          {info.collection_name}
+                        </strong>
+                      </h3>
+                      <hr style={{ marginTop: 0 }} />
+                      {listOfGames(info.collection)}
+                    </span>
+                    )}
 
                 <h3><strong style={{ textShadow: '1px 1px 1px #9E9E9E' }}>Other Similar Games</strong></h3>
                 <hr style={{ marginTop: 0 }} />
