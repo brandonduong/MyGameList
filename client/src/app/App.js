@@ -27,6 +27,7 @@ function App() {
                     <GoogleAds slot={'6180999739'} />
                 </Col>
                 <Col xs={12} lg={8}>
+                Hello world
                 */}
             <Switch>
               <Route path="/" exact component={Home} />
