@@ -3,8 +3,8 @@ import {
   Button, Card, Col, Container, Form, Row,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const eye = <FontAwesomeIcon icon={faEye} />;
 const eyeSlash = <FontAwesomeIcon icon={faEyeSlash} />;
@@ -14,9 +14,12 @@ function SignUp(props) {
     username: '',
     email: '',
     password: '',
+    confirm: '',
   });
 
-  const { username, email, password } = user;
+  const {
+    username, email, password, confirm,
+  } = user;
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -41,13 +44,18 @@ function SignUp(props) {
         if (res.status === 200) {
           history.push('/login');
         } else {
-          const error = new Error(res.error);
+          return res.json();
+        }
+      }).then((data) => {
+        if (data) {
+          console.log(data);
+          const error = new Error(data.error);
           throw error;
         }
-      })
+    })
       .catch((err) => {
         console.error(err);
-        alert('Error signing up please try again');
+        alert(err);
       });
   }
 
@@ -64,7 +72,7 @@ function SignUp(props) {
           required
           maxLength={20}
         />
-        <Form.Label>Email address:</Form.Label>
+        <Form.Label style={{ marginTop: 10 }}>Email address:</Form.Label>
         <Form.Control
           type="email"
           name="email"
@@ -74,7 +82,7 @@ function SignUp(props) {
           required
           maxLength={50}
         />
-        <Form.Label>Password:</Form.Label>
+        <Form.Label style={{ marginTop: 10 }}>Password:</Form.Label>
         <Row>
           <Col>
             <Form.Control
@@ -95,21 +103,31 @@ function SignUp(props) {
               alignItems: 'center',
             }}
           >
-            <i
-              onClick={togglePasswordVisibility}
-            >
+            <i onClick={togglePasswordVisibility}>
               {showPassword ? eye : eyeSlash}
             </i>
           </Col>
         </Row>
-        {/*
-                <i onClick={togglePasswordVisibility} style={{position: "relative",
-                    display: "flex",
-                    marginTop: 6}}>{eye}</i>
-                */}
+        <Form.Label style={{ marginTop: 10 }}>Confirm password:</Form.Label>
+        <Row>
+          <Col>
+            <Form.Control
+              type={showPassword ? 'text' : 'password'}
+              name="confirm"
+              placeholder="Confirm password"
+              value={confirm}
+              onChange={onChange}
+              required
+              maxLength={50}
+            />
+          </Col>
+          <Col
+            xs={1}
+          />
+        </Row>
         <br />
       </Form.Group>
-      <Button type="submit" className="submit-button" variant="dark">Signup</Button>
+      <Button type="submit" className="submit-button" variant="dark">Sign Up</Button>
     </Form>
   );
 

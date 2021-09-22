@@ -71,7 +71,7 @@ function Login(props) {
           required
           maxLength={20}
         />
-        <Form.Label>Password:</Form.Label>
+        <Form.Label style={{ marginTop: 10 }}>Password:</Form.Label>
         <Row>
           <Col>
             <Form.Control

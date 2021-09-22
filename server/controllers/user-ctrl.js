@@ -4,19 +4,23 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config()
 
 createUser = (req, res) => {
-    const { username, email, password } = req.body;
-    const user = new User({ username, email, password });
-    user.save(function(err) {
-        if (err) {
-            res.status(500)
-                .send("Error registering new user please try again.")
-        } else {
-            const vgList = new VideoGameList({username: username, name: "Default"})
-            vgList.save(function (err) {
-            })
-            res.status(200).send("Welcome to the club!");
-        }
-    })
+    const { username, email, password, confirm } = req.body;
+    if (confirm.localeCompare(password) !== 0) {
+        res.status(400).json({error: "Passwords don't match"});
+    } else {
+        const user = new User({ username, email, password });
+        user.save(function(err) {
+            if (err) {
+                res.status(500)
+                    .json({error: "User with entered email/username already exists."});
+            } else {
+                const vgList = new VideoGameList({username: username, name: "Default"})
+                vgList.save(function (err) {
+                })
+                res.status(200).send("Welcome to the club!");
+            }
+        })
+    }
 }
 
 authenticateUser = (req, res) => {
